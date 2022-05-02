@@ -1,0 +1,4 @@
+&name:şule
+&password:11111
+&gender:female
+&balance:1000

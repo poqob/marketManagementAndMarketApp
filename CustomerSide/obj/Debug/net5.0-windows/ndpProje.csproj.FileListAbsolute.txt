@@ -1,0 +1,16 @@
+C:\Dosyalar\ndpProje\CustomerSide\bin\Debug\net5.0-windows\ndpProje.exe
+C:\Dosyalar\ndpProje\CustomerSide\bin\Debug\net5.0-windows\ndpProje.deps.json
+C:\Dosyalar\ndpProje\CustomerSide\bin\Debug\net5.0-windows\ndpProje.runtimeconfig.json
+C:\Dosyalar\ndpProje\CustomerSide\bin\Debug\net5.0-windows\ndpProje.runtimeconfig.dev.json
+C:\Dosyalar\ndpProje\CustomerSide\bin\Debug\net5.0-windows\ndpProje.dll
+C:\Dosyalar\ndpProje\CustomerSide\bin\Debug\net5.0-windows\ref\ndpProje.dll
+C:\Dosyalar\ndpProje\CustomerSide\bin\Debug\net5.0-windows\ndpProje.pdb
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ndpProje.csproj.AssemblyReference.cache
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ndpProje.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ndpProje.AssemblyInfoInputs.cache
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ndpProje.AssemblyInfo.cs
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ndpProje.csproj.CoreCompileInputs.cache
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ndpProje.dll
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ref\ndpProje.dll
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ndpProje.pdb
+C:\Dosyalar\ndpProje\CustomerSide\obj\Debug\net5.0-windows\ndpProje.genruntimeconfig.cache
