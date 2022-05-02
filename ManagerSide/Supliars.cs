@@ -142,14 +142,11 @@ namespace Supliars
             Border.cornerRadius = 45;
             Border.ForeColor = Color.White;
             Controls.Add(Border);
-
-
+            
 
             menuCreator(ref company);
 
-
         }
-
 
         //this method creates catagory buttons and order button
         private void menuCreator(ref string company)
@@ -175,13 +172,13 @@ namespace Supliars
                 Controls.Add(menuButton);
                 menuButton.BringToFront();
                 point.Y += 82;
+
+                // there is no any temp file
+                if (!File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp"))
+                {
+                    File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                }
             }
-
-
-
-
-
-
 
         }
 
@@ -200,7 +197,7 @@ namespace Supliars
             {
                 string fotoToDisplay = @"datas\suppliers\" + company + @"\fotoData\" + catagory.ToUpper() + @"\" + i + ".png";
                 string fileToDisplay = @"datas\suppliers\" + company + @"\fotoData\" + catagory.ToUpper() + @"\" + i + ".txt";
-                string productInformationDirectory = @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt";
+                string productInformationDirectory = @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp";
                 string companyName = company;
                 string wear;
                 switch (i)
@@ -255,7 +252,9 @@ namespace Supliars
                 numericUpDown.BackColor = BackColor;
                 numericUpDown.Maximum = getStockNum(ref productInformationDirectory, ref i);
                 numericUpDown.Tag = wear;
-                //numericUpDown.Click += delegate (object sender, EventArgs e) { ProductProcess.productInformationCollector(((int)numericUpDown.Value), ref productInformationDirectory, ref fileToDisplay, ref fotoToDisplay, ref companyName, ref catagory, numericUpDown.Tag.ToString()); };
+                numericUpDown.AllowDrop = false;
+                numericUpDown.ReadOnly = true;
+                numericUpDown.Click += delegate (object sender, EventArgs e) { ProductProcess.stockNumAdjusting(ref productInformationDirectory, ((int)numericUpDown.Value), ref wear); };
 
                 Controls.Add(numericUpDown);
                 numericUpDown.BringToFront();
@@ -267,7 +266,7 @@ namespace Supliars
                 button.BorderSize = 1;
                 button.BorderRadius = 5;
                 button.BorderColor = Color.White;
-                //button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum; ProductProcess.productInformationCollector(((int)numericUpDown.Maximum), ref productInformationDirectory, ref fileToDisplay, ref fotoToDisplay, ref companyName, ref catagory, numericUpDown.Tag.ToString()); };
+                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum; };
                 button.Text = "M";
                 Controls.Add(button);
                 button.BringToFront();
@@ -279,25 +278,27 @@ namespace Supliars
                 point.X += 180;
 
 
-                RJButton addToChartButton = new RJButton();
-                Point addToChartButtonPoint = new Point(380, 345);
-
-                addToChartButton.Location = addToChartButtonPoint;
-                addToChartButton.Size = new Size(150, 50);
-                addToChartButton.Text = "ADD TO CHART";
-                addToChartButton.BorderSize = 1;
-                addToChartButton.BorderRadius = 10;
-                addToChartButton.BorderColor = Color.White;
-                addToChartButton.ForeColor = Color.White;
-                addToChartButton.BackColor = BackColor;
-                addToChartButton.Click += delegate (object sender, EventArgs e) { ProductProcess.productInformationCollector(((int)numericUpDown.Value), ref productInformationDirectory, ref fileToDisplay, ref fotoToDisplay, ref companyName, ref catagory, numericUpDown.Tag.ToString()); };
-                Controls.Add(addToChartButton);
-                addToChartButton.BringToFront();
                 if (i == 3)
                 {
-                    addToChartButton.Dispose();
-                    addToChartButton.Dispose(); 
+                    RJButton addToChartButton = new RJButton();
+                    Point addToChartButtonPoint = new Point(380, 345);
+
+                    addToChartButton.Location = addToChartButtonPoint;
+                    addToChartButton.Size = new Size(150, 50);
+                    addToChartButton.Text = "ADD TO CHART";
+                    addToChartButton.BorderSize = 1;
+                    addToChartButton.BorderRadius = 10;
+                    addToChartButton.BorderColor = Color.White;
+                    addToChartButton.ForeColor = Color.White;
+                    addToChartButton.BackColor = BackColor;
+                    addToChartButton.Click += delegate (object sender, EventArgs e)
+                    {
+                        ProductProcess.addToChartButtonF(ref companyName);
+                    };
+                    Controls.Add(addToChartButton);
+                    addToChartButton.BringToFront();
                 }
+
             }
 
 
@@ -395,19 +396,13 @@ namespace Supliars
     static class ProductProcess
     {
 
-        public static void productInformationCollector(int howMany, ref string productInformationDirectory, ref string fileToDisplay, ref string fotoToDisplay, ref string company, ref string catagory, string whichProduct)
-        {
-            //whichProduct, 1:sweater 2:T-shirt 3:pants
-            //ProductModel model = new ProductModel(ref howMany, ref productInformationDirectory, ref fileToDisplay, ref fotoToDisplay, ref company, ref catagory,ref whichProduct);
-            stockNumAdjusting(ref productInformationDirectory, ref howMany, ref whichProduct);
-        }
-
-
-        private static void stockNumAdjusting(ref string productInformationDirector, ref int howMany, ref string whichProduct)
+        public static void stockNumAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct)
         {
 
             //read information fie
             string readFile = File.ReadAllText(productInformationDirector);
+            string readFileOriginal = File.ReadAllText(productInformationDirector.Substring(0,productInformationDirector.Length-3)+"txt");
+            MessageBox.Show(readFileOriginal);
 
 
             int index = readFile.IndexOf(whichProduct);
@@ -416,7 +411,7 @@ namespace Supliars
 
 
             //substringing and converting to intager related stock num imformation
-            int currentStockNum = Convert.ToInt32(readFile.Substring(index + 4, index2 - index - 4));
+            int currentStockNum = Convert.ToInt32(readFileOriginal.Substring(index + 4, index2 - index - 4));
             //minusing currentStockNum variable of howMany times
             currentStockNum -= howMany;
 
@@ -425,41 +420,27 @@ namespace Supliars
 
 
             File.WriteAllText(productInformationDirector, readFile);
-            MessageBox.Show(readFile + currentStockNum.ToString());
-
-
         }
 
-    }
 
-    class ProductModel
-    {
-        public int stock = 0;
-
-        string productInformationDirectoryAdress = "";
-
-        string productMaterialInformationAdress = "";
-
-        string productFotoAdress = "";
-
-        public string companyName = "";
-
-        //woman man child
-        public string catagoryOfproduct = "";
-
-        public ProductModel(ref int howMany, ref string productInformationDirectory, ref string fileToDisplay, ref string fotoToDisplay, ref string company, ref string catagory, string product)
+        public static void addToChartButtonF(ref string company)
         {
-            stock = howMany;
-            productInformationDirectoryAdress = productInformationDirectory;
-            productMaterialInformationAdress = fileToDisplay;
-            productFotoAdress = fotoToDisplay;
-            companyName = company;
-            catagoryOfproduct = catagory;
+            
+            string[] catagories = { "woman", "man", "chıld" };
 
 
+
+            //deleting tmp files
+            foreach (string catagory in catagories)
+            {
+                File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+            }
         }
     }
 }
+
+
+
 
 /*//order button
             RJButton orderButton = new RJButton();
@@ -475,3 +456,31 @@ namespace Supliars
             orderButton.BackColor = BackColor;
             Controls.Add(orderButton);
             orderButton.BringToFront();*/
+
+/*
+class ProductModel
+{
+    public int stock = 0;
+
+    string productInformationDirectoryAdress = "";
+
+    string productMaterialInformationAdress = "";
+
+    string productFotoAdress = "";
+
+    public string companyName = "";
+
+    //woman man child
+    public string catagoryOfproduct = "";
+
+    public ProductModel(ref int howMany, ref string productInformationDirectory, ref string fileToDisplay, ref string fotoToDisplay, ref string company, ref string catagory, string product)
+    {
+        stock = howMany;
+        productInformationDirectoryAdress = productInformationDirectory;
+        productMaterialInformationAdress = fileToDisplay;
+        productFotoAdress = fotoToDisplay;
+        companyName = company;
+        catagoryOfproduct = catagory;
+    }
+}
+*/
