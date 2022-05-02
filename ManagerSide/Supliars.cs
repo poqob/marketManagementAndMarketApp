@@ -142,7 +142,7 @@ namespace Supliars
             Border.cornerRadius = 45;
             Border.ForeColor = Color.White;
             Controls.Add(Border);
-            
+
 
             menuCreator(ref company);
 
@@ -168,7 +168,7 @@ namespace Supliars
                 menuButton.BorderSize = 2;
                 menuButton.Text = catagory;
                 menuButton.Font = ItalicFont;
-                menuButton.Click += delegate (object sender, EventArgs e) { contentCreator(sender, e, menuButton.Text, ref companyName); };
+                menuButton.Click += delegate (object sender, EventArgs e) { contentCreator(sender, e, menuButton.Text, ref companyName); ProductProcess.isAddToCharPressed=false; };
                 Controls.Add(menuButton);
                 menuButton.BringToFront();
                 point.Y += 82;
@@ -316,15 +316,15 @@ namespace Supliars
             {
                 case 1:
                     //SWEATER's ER:
-                    wear = "ER:";
+                    wear = "TER:";
                     break;
                 case 2:
                     //T-SHIRT's RT:
-                    wear = "RT:";
+                    wear = "IRT:";
                     break;
                 case 3:
                     //PANTS's TS:
-                    wear = "TS:";
+                    wear = "NTS:";
                     break;
                 default:
                     wear = "";
@@ -332,12 +332,12 @@ namespace Supliars
             }
 
             //find related data line in information folder.
-            int index = content.IndexOf(wear);
+            int index = content.IndexOf(wear) + 4;
             //find first ','comma sign in related line.
             int index2 = content.IndexOf(",", index);
 
             //substringing and converting to intager
-            stockNum = Convert.ToInt32(content.Substring(index + 3, index2 - index - 3));
+            stockNum = Convert.ToInt32(content.Substring(index, index2 - index));
 
             return stockNum;
         }
@@ -395,40 +395,49 @@ namespace Supliars
 
     static class ProductProcess
     {
-
+        public static bool isAddToCharPressed=false;
         public static void stockNumAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct)
         {
 
-            //read information fie
+            //reading information files.
+            //tmp
             string readFile = File.ReadAllText(productInformationDirector);
-            string readFileOriginal = File.ReadAllText(productInformationDirector.Substring(0,productInformationDirector.Length-3)+"txt");
-            MessageBox.Show(readFileOriginal);
+            //txt
+            string readFileOriginal = File.ReadAllText(productInformationDirector.Substring(0, productInformationDirector.Length - 3) + "txt");
 
 
-            int index = readFile.IndexOf(whichProduct);
+            //needed indexes for parsing stock number from original txt file
+            int index = readFileOriginal.IndexOf(whichProduct) + 4;
 
-            int index2 = readFile.IndexOf(",", index);
-
-
-            //substringing and converting to intager related stock num imformation
-            int currentStockNum = Convert.ToInt32(readFileOriginal.Substring(index + 4, index2 - index - 4));
-            //minusing currentStockNum variable of howMany times
-            currentStockNum -= howMany;
-
-            readFile = readFile.Remove(index + 4, index2 - index - 4);
-            readFile = readFile.Insert(index + 4, currentStockNum.ToString());
+            int index2 = readFileOriginal.IndexOf(",", index);
 
 
+            //substringing and converting to intager related stock num imformation from original file which is not edited yet.
+            //this stock num will be edited after related product added to chart.
+            int baseStockNum = Math.Abs(Convert.ToInt32(readFileOriginal.Substring(index, index2 - index)));
+
+
+            //needed indexes for parsing stock number from temporary tmp file
+            int index3 = readFile.IndexOf(whichProduct) + 4;
+
+            int index4 = readFile.IndexOf(",", index);
+
+
+            //substringing and converting to intager related stock num imformation from tmp file which is edited before.
+            int tmpStockNum = Convert.ToInt32(readFile.Substring(index3, index4 - index3));
+            //calculating current stock number, while we ordering product.
+            int currentStockNum = Math.Abs(baseStockNum - howMany);
+            //replacing old stock number with current one.
+            readFile = readFile.Replace(whichProduct + tmpStockNum.ToString(), whichProduct + currentStockNum.ToString());
+            //applying changes to tmp file. changes: stock numbers.
             File.WriteAllText(productInformationDirector, readFile);
         }
 
 
         public static void addToChartButtonF(ref string company)
         {
-            
+            isAddToCharPressed=true;
             string[] catagories = { "woman", "man", "chıld" };
-
-
 
             //deleting tmp files
             foreach (string catagory in catagories)

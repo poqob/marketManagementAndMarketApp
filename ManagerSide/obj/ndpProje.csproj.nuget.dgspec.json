@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Dosyalar\\ndpProje\\ManagerSide\\ndpProje.csproj": {}
+    "C:\\Dosyalar\\marketManagementAndMarketApp\\ManagerSide\\ndpProje.csproj": {}
   },
   "projects": {
-    "C:\\Dosyalar\\ndpProje\\ManagerSide\\ndpProje.csproj": {
+    "C:\\Dosyalar\\marketManagementAndMarketApp\\ManagerSide\\ndpProje.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dosyalar\\ndpProje\\ManagerSide\\ndpProje.csproj",
+        "projectUniqueName": "C:\\Dosyalar\\marketManagementAndMarketApp\\ManagerSide\\ndpProje.csproj",
         "projectName": "ndpProje",
-        "projectPath": "C:\\Dosyalar\\ndpProje\\ManagerSide\\ndpProje.csproj",
+        "projectPath": "C:\\Dosyalar\\marketManagementAndMarketApp\\ManagerSide\\ndpProje.csproj",
         "packagesPath": "C:\\Users\\mmerm\\.nuget\\packages\\",
-        "outputPath": "C:\\Dosyalar\\ndpProje\\ManagerSide\\obj\\",
+        "outputPath": "C:\\Dosyalar\\marketManagementAndMarketApp\\ManagerSide\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\mmerm\\AppData\\Roaming\\NuGet\\NuGet.Config"

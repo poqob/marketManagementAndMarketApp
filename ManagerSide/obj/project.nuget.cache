@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yf/SdjP1fwGl3HXmMpklMDhCMZNK2IjpeRik5C8J6mEmepEqPchT5ExcbbMDydk4AvnTD8IqP2J/ZTuaT785uw==",
+  "dgSpecHash": "kdcuX30P8EpldtxBd2eabs5YManuhZdmqxzkpd3UuYEN3GV5qwTySDnSFbymrRAm/fvN/wdK4IqsvDr54sYKsw==",
   "success": true,
-  "projectFilePath": "C:\\Dosyalar\\ndpProje\\ManagerSide\\ndpProje.csproj",
+  "projectFilePath": "C:\\Dosyalar\\marketManagementAndMarketApp\\ManagerSide\\ndpProje.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
