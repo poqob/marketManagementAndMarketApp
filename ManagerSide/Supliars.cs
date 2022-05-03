@@ -135,7 +135,7 @@ namespace Supliars
         private void baseCreator(ref string company)
         {
             BackColor = Color.FromArgb(38, 38, 38);
-
+            string companyName=company;
             //heading
             label.Size = new Size(200, 55);
             label.Location = new Point(40, 40);
@@ -150,7 +150,7 @@ namespace Supliars
             Controls.Add(label);
 
 
-            //orders button
+            //see orders button
             ordersButton.Size = new Size(80, 55);
             ordersButton.Location = new Point(650, 40);
             ordersButton.BackColor = BackColor;
@@ -160,6 +160,7 @@ namespace Supliars
             ordersButton.Text = "see orders";
             ordersButton.ForeColor = Color.White;
             ordersButton.Tag = "base";
+            ordersButton.Click+=delegate(object sender, EventArgs e){ProductProcess.seeOrders(ref companyName);};
             Controls.Add(ordersButton);
 
 
@@ -305,7 +306,7 @@ namespace Supliars
                 button.BorderSize = 1;
                 button.BorderRadius = 5;
                 button.BorderColor = Color.White;
-                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum; };
+                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum;ProductProcess.stockNumAdjusting(ref productInformationDirectory, ((int)numericUpDown.Maximum), ref wear); };
                 button.Text = "M";
                 Controls.Add(button);
                 button.BringToFront();
@@ -447,6 +448,7 @@ namespace Supliars
 
     static class ProductProcess
     {
+        //apply dynamic stock changes to the tmp file
         public static void stockNumAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct)
         {
 
@@ -484,10 +486,10 @@ namespace Supliars
             File.WriteAllText(productInformationDirector, readFile);
         }
 
+        static string[] catagories = { "woman", "man", "chıld" };
 
         public static void addToChartControll(ref string company, bool isAddToCharPressed)
         {
-            string[] catagories = { "woman", "man", "chıld" };
 
             if (isAddToCharPressed == true)
             {
@@ -497,8 +499,6 @@ namespace Supliars
                     File.Replace(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
-                    File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
-
                 }
             }
             else
@@ -525,6 +525,32 @@ namespace Supliars
             }
 
         }
+
+
+        /*
+        here, seeOrders menu will be simple message box.
+        if we pressed okay, supplier's txt files will equal to tmp files.
+        then create new txt file to allStock file. 
+        TODO: Design allStock file and it's data folder.
+        */
+        static string orders;
+        public static void seeOrders(ref string company)
+        {
+
+            DialogResult result = MessageBox.Show("Do you want to order these below ?\n" + orders);
+
+            if (result == DialogResult.Yes)
+            {
+                foreach (string catagory in catagories)
+                {
+                    File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                }
+            }
+
+
+        }
+
+
     }
 
     //reset NumericUpDown form elements
@@ -544,17 +570,6 @@ namespace Supliars
         }
     }
 
-
-    public static class SeeOrders
-    {
-
-        /*
-        here, seeOrders menu will be simple message box.
-        if we pressed okay, supplier's txt files will equal to tmp files.
-        then create new txt file to allStock file. 
-        TODO: Design allStock file and it's data folder.
-        */
-    }
 
 
 }
