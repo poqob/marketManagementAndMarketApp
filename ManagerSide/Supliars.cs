@@ -543,4 +543,18 @@ namespace Supliars
             }
         }
     }
+
+
+    public static class SeeOrders
+    {
+
+        /*
+        here, seeOrders menu will be simple message box.
+        if we pressed okay, supplier's txt files will equal to tmp files.
+        then create new txt file to allStock file. 
+        TODO: Design allStock file and it's data folder.
+        */
+    }
+
+
 }
