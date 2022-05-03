@@ -17,6 +17,14 @@ namespace Supliars
         RoundLabel Border = new RoundLabel();
         public SupliarsMarketPlace()
         {
+
+            baseCreator();
+            buttonCreator();
+
+        }
+        //creates form's base.
+        private void baseCreator()
+        {
             BackColor = Color.FromArgb(38, 38, 38);
 
             //heading
@@ -41,9 +49,6 @@ namespace Supliars
             Border.cornerRadius = 45;
             Border.ForeColor = Color.White;
             Controls.Add(Border);
-
-            buttonCreator();
-
         }
 
         //creates supliars companies buttons to choose.
@@ -79,6 +84,7 @@ namespace Supliars
             page = new SupliarsMarketContentCreator(company);
             page.Size = new Size(800, 500);
             this.Hide();
+            this.CenterToScreen();
             page.ShowDialog();
         }
     }
@@ -100,9 +106,33 @@ namespace Supliars
 
         Font LargeFont = new Font("Arial", 13, FontStyle.Italic);
         RoundLabel Border = new RoundLabel();
-
         string[] catagories = { "woman", "man", "chıld" };
         public SupliarsMarketContentCreator(string company)
+        {
+            baseCreator(ref company);
+            menuCreator(ref company);
+            this.FormClosed += delegate (object sender, FormClosedEventArgs e)
+            {
+                destructor(ref company);
+            };
+        }
+
+        //our forms Destructor. when form was closed, this function will ran.
+        private void destructor(ref string company)
+        {
+            foreach (string catagory in catagories)
+            {
+
+                if (File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp"))
+                {
+                    //deleting unnecessary edited tmp files.
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                }
+            }
+
+        }
+
+        private void baseCreator(ref string company)
         {
             BackColor = Color.FromArgb(38, 38, 38);
 
@@ -115,7 +145,7 @@ namespace Supliars
             label.cornerRadius = 23;
             label.Text = company + "  Stocks";
             label.Font = LargeFont;
-
+            label.Tag = "base";
             label.ForeColor = Color.White;
             Controls.Add(label);
 
@@ -129,6 +159,7 @@ namespace Supliars
             ordersButton.BorderRadius = 20;
             ordersButton.Text = "see orders";
             ordersButton.ForeColor = Color.White;
+            ordersButton.Tag = "base";
             Controls.Add(ordersButton);
 
 
@@ -141,12 +172,12 @@ namespace Supliars
             Border.borderWidth = 3;
             Border.cornerRadius = 45;
             Border.ForeColor = Color.White;
+            Border.Tag = "base";
             Controls.Add(Border);
 
 
-            menuCreator(ref company);
-
         }
+
 
         //this method creates catagory buttons and order button
         private void menuCreator(ref string company)
@@ -156,7 +187,7 @@ namespace Supliars
             Font ItalicFont = new Font("Arial", 8, FontStyle.Italic);
             string companyName = company;
 
-            //creating catagory buttons like child, woman, man
+            //creating catagory buttons : child, woman, man
             foreach (string catagory in catagories)
             {
                 RJButton menuButton = new RJButton();
@@ -168,7 +199,8 @@ namespace Supliars
                 menuButton.BorderSize = 2;
                 menuButton.Text = catagory;
                 menuButton.Font = ItalicFont;
-                menuButton.Click += delegate (object sender, EventArgs e) { contentCreator(sender, e, menuButton.Text, ref companyName); ProductProcess.isAddToCharPressed=false; };
+                menuButton.Tag = "base1";
+                menuButton.Click += delegate (object sender, EventArgs e) { contentCreator(sender, e, menuButton.Text, ref companyName); ProductProcess.addToChartControll(ref companyName, false); };
                 Controls.Add(menuButton);
                 menuButton.BringToFront();
                 point.Y += 82;
@@ -177,6 +209,12 @@ namespace Supliars
                 if (!File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp"))
                 {
                     File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                }
+                else
+                {
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                    File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+
                 }
             }
 
@@ -198,6 +236,7 @@ namespace Supliars
                 string fotoToDisplay = @"datas\suppliers\" + company + @"\fotoData\" + catagory.ToUpper() + @"\" + i + ".png";
                 string fileToDisplay = @"datas\suppliers\" + company + @"\fotoData\" + catagory.ToUpper() + @"\" + i + ".txt";
                 string productInformationDirectory = @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp";
+                string productInformationDirectoryOriginal = @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt";
                 string companyName = company;
                 string wear;
                 switch (i)
@@ -239,7 +278,7 @@ namespace Supliars
                 label.BackColor = BackColor;
                 label.Location = point1;
                 label.Size = new Size(120, 65);
-                label.Text = File.ReadAllText(fileToDisplay) + " $" + getProductCost(ref productInformationDirectory, ref i);
+                label.Text = File.ReadAllText(fileToDisplay) + " $" + getProductCost(ref productInformationDirectoryOriginal, ref i);
                 label.ForeColor = Color.White;
                 Controls.Add(label);
                 label.BringToFront();
@@ -250,7 +289,7 @@ namespace Supliars
                 numericUpDown.Visible = true;
                 numericUpDown.ForeColor = Color.White;
                 numericUpDown.BackColor = BackColor;
-                numericUpDown.Maximum = getStockNum(ref productInformationDirectory, ref i);
+                numericUpDown.Maximum = getStockNum(ref productInformationDirectoryOriginal, ref i);
                 numericUpDown.Tag = wear;
                 numericUpDown.AllowDrop = false;
                 numericUpDown.ReadOnly = true;
@@ -293,7 +332,20 @@ namespace Supliars
                     addToChartButton.BackColor = BackColor;
                     addToChartButton.Click += delegate (object sender, EventArgs e)
                     {
-                        ProductProcess.addToChartButtonF(ref companyName);
+
+                        /*
+                        //reinitialiaze the form after adding products to chart, this part may be more clear but i haven't enough time.
+                        ProductProcess.addToChartControll(ref companyName, true);
+                        SupliarsMarketContentCreator page;
+                        page = new SupliarsMarketContentCreator(companyName);
+                        page.Size = new Size(800, 500);
+                        this.Dispose();
+                        page.CenterToParent();
+                        page.ShowDialog();
+                        */
+
+                        ProductProcess.addToChartControll(ref companyName, true);
+                        Utilities.ResetAllControls(this);
                     };
                     Controls.Add(addToChartButton);
                     addToChartButton.BringToFront();
@@ -395,7 +447,6 @@ namespace Supliars
 
     static class ProductProcess
     {
-        public static bool isAddToCharPressed=false;
         public static void stockNumAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct)
         {
 
@@ -434,62 +485,62 @@ namespace Supliars
         }
 
 
-        public static void addToChartButtonF(ref string company)
+        public static void addToChartControll(ref string company, bool isAddToCharPressed)
         {
-            isAddToCharPressed=true;
             string[] catagories = { "woman", "man", "chıld" };
 
-            //deleting tmp files
-            foreach (string catagory in catagories)
+            if (isAddToCharPressed == true)
             {
-                File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                //TODO: delete txt files and convert tmp files to txt files.
+                foreach (string catagory in catagories)
+                {
+                    File.Replace(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
+                    File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+
+                }
+            }
+            else
+            {
+                //TODO:  make tmp file's -woman,man,child- contents same with txt files.
+                foreach (string catagory in catagories)
+                {
+
+                    if (File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp"))
+                    {
+                        /* //delete edited but not allowed old tmp file to derivate new one.
+                         File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");*/
+                        File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                        File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+
+                    }
+
+                    // if delete procces was succesful then copy new one from original txt file.
+                    if (!File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp"))
+                    {
+                        File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                    }
+                }
+            }
+
+        }
+    }
+
+    //reset NumericUpDown form elements
+    public static class Utilities
+    {
+        public static void ResetAllControls(Control form)
+        {
+            foreach (Control control in form.Controls)
+            {
+                //reset numericUpDown buttons
+                if (control is NumericUpDown)
+                {
+                    NumericUpDown upDown = (NumericUpDown)control;
+                    upDown.Value = 0;
+                }
             }
         }
     }
 }
-
-
-
-
-/*//order button
-            RJButton orderButton = new RJButton();
-            Point orderButtonPoint = new Point(500, 345);
-
-            orderButton.Location = orderButtonPoint;
-            orderButton.Size = new Size(100, 50);
-            orderButton.Text = "ORDER";
-            orderButton.BorderSize = 1;
-            orderButton.BorderRadius = 10;
-            orderButton.BorderColor = Color.White;
-            orderButton.ForeColor = Color.White;
-            orderButton.BackColor = BackColor;
-            Controls.Add(orderButton);
-            orderButton.BringToFront();*/
-
-/*
-class ProductModel
-{
-    public int stock = 0;
-
-    string productInformationDirectoryAdress = "";
-
-    string productMaterialInformationAdress = "";
-
-    string productFotoAdress = "";
-
-    public string companyName = "";
-
-    //woman man child
-    public string catagoryOfproduct = "";
-
-    public ProductModel(ref int howMany, ref string productInformationDirectory, ref string fileToDisplay, ref string fotoToDisplay, ref string company, ref string catagory, string product)
-    {
-        stock = howMany;
-        productInformationDirectoryAdress = productInformationDirectory;
-        productMaterialInformationAdress = fileToDisplay;
-        productFotoAdress = fotoToDisplay;
-        companyName = company;
-        catagoryOfproduct = catagory;
-    }
-}
-*/
