@@ -227,10 +227,25 @@ namespace Supliars
                     File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
 
                 }
+                //cleaning unneccesary .poqob
                 if (File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob"))
                 {
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
                 }
+
+                //cleaning unneccesary .poqobtmp
+                if (File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp"))
+                {
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp");
+                }
+
+                //cleanin orders file.
+                if (Directory.Exists(@"ManagerSide\datas\orders"))
+                {
+                    Directory.Delete(@"ManagerSide\datas\orders");
+                    Directory.CreateDirectory(@"ManagerSide\datas\orders");
+                }
+
             }
 
         }
@@ -308,7 +323,7 @@ namespace Supliars
                 numericUpDown.Tag = wear;
                 numericUpDown.AllowDrop = false;
                 numericUpDown.ReadOnly = true;
-                numericUpDown.Click += delegate (object sender, EventArgs e) { ProductProcess.stockNumAdjusting(ref productInformationDirectory, ((int)numericUpDown.Value), ref wear); };
+                numericUpDown.Click += delegate (object sender, EventArgs e) { ProductProcess.stockNumAndCostAdjusting(ref productInformationDirectory, ((int)numericUpDown.Value), ref wear); };
 
                 Controls.Add(numericUpDown);
                 numericUpDown.BringToFront();
@@ -320,7 +335,7 @@ namespace Supliars
                 button.BorderSize = 1;
                 button.BorderRadius = 5;
                 button.BorderColor = Color.White;
-                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum; ProductProcess.stockNumAdjusting(ref productInformationDirectory, ((int)numericUpDown.Maximum), ref wear); };
+                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum; ProductProcess.stockNumAndCostAdjusting(ref productInformationDirectory, ((int)numericUpDown.Maximum), ref wear); };
                 button.Text = "M";
                 Controls.Add(button);
                 button.BringToFront();
@@ -348,16 +363,9 @@ namespace Supliars
                     addToChartButton.Click += delegate (object sender, EventArgs e)
                     {
 
-                        /*
-                        //reinitialiaze the form after adding products to chart, this part may be more clear but i haven't enough time.
-                        ProductProcess.addToChartControll(ref companyName, true);
-                        SupliarsMarketContentCreator page;
-                        page = new SupliarsMarketContentCreator(companyName);
-                        page.Size = new Size(800, 500);
-                        this.Dispose();
-                        page.CenterToParent();
-                        page.ShowDialog();
-                        */
+
+                        //reinitialiaze the form after adding products to chart.
+                        //or reinitialize variables ;). hehe boi.
 
                         ProductProcess.addToChartControll(ref companyName, true);
                         Utilities.ResetAllControls(this);
@@ -367,7 +375,6 @@ namespace Supliars
                 }
 
             }
-
 
         }
 
@@ -462,8 +469,11 @@ namespace Supliars
 
     static class ProductProcess
     {
+
+
+
         //apply dynamic stock changes to the tmp file
-        public static void stockNumAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct)
+        public static void stockNumAndCostAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct)
         {
 
             //reading information files.
@@ -498,6 +508,31 @@ namespace Supliars
             readFile = readFile.Replace(whichProduct + tmpStockNum.ToString(), whichProduct + currentStockNum.ToString());
             //applying changes to tmp file. changes: stock numbers.
             File.WriteAllText(productInformationDirector, readFile);
+
+
+
+            //TODO: getting order price is done. now i'll create order file which is like in orders folder 'ertanSweater.txt'.
+                    //and attempt neccesary datas to in it.
+                    //name,stock,total price,image path,explanation about product
+                    //then we will use this .txt file as market product if user allowed shopping.
+                    //if shopping has allowed, this file will have moved to 'allStock' folder.
+                    //then if market managament wants, can move the products to market place 'productsForSale'.
+                    //and finally user can see and bought products from market, from this folder.
+
+            if (!File.Exists(productInformationDirector.Substring(0, productInformationDirector.Length - 3) + ".poqobtmp"))
+            {
+                getProductCost(ref productInformationDirector, ref whichProduct, ref howMany);
+            }
+            else
+            {
+                string productInformationDirectorButPoqobtmp = productInformationDirector.Substring(0, productInformationDirector.Length - 3) + ".poqobtmp";
+                getProductCost(ref productInformationDirectorButPoqobtmp, ref whichProduct, ref howMany);
+            }
+
+
+
+
+
         }
 
         static string orders = "";
@@ -529,6 +564,7 @@ namespace Supliars
                     if (!File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp"))
                     {
                         File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp");
+
                     }
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
                 }
@@ -594,6 +630,7 @@ namespace Supliars
                     File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp");
 
+
                 }
             }
             else
@@ -619,6 +656,77 @@ namespace Supliars
             orders = "";
 
         }
+
+
+
+
+
+
+
+
+        static int getStockNum(ref string productInformationDirectory, ref int whichProduct)
+        {
+            //1=sweater ,2=tshirt, 3=pants
+            //read product information (that has stock information in it) file.
+            string content = File.ReadAllText(productInformationDirectory);
+            string wear;
+            int stockNum;
+            //determining to get which product stock number.
+            switch (whichProduct)
+            {
+                case 1:
+                    //SWEATER's ER:
+                    wear = "TER:";
+                    break;
+                case 2:
+                    //T-SHIRT's RT:
+                    wear = "IRT:";
+                    break;
+                case 3:
+                    //PANTS's TS:
+                    wear = "NTS:";
+                    break;
+                default:
+                    wear = "";
+                    break;
+            }
+
+            //find related data line in information folder.
+            int index = content.IndexOf(wear) + 4;
+            //find first ','comma sign in related line.
+            int index2 = content.IndexOf(",", index);
+
+            //substringing and converting to intager
+            stockNum = Convert.ToInt32(content.Substring(index, index2 - index));
+
+            return stockNum;
+        }
+        static double getProductCost(ref string productInformationDirectory, ref string whichProduct, ref int howMany)
+        {
+
+            //read product information (that has stock information in it) file.
+            string content = File.ReadAllText(productInformationDirectory);
+            int productCost;
+            //determining to get which product stock number.
+
+
+            //find related data line in information folder.
+            int index = content.IndexOf(whichProduct);
+            //find first ','comma sign in related line.
+            int index2 = content.IndexOf(",", index);
+            //finding firs '$'dollar sign to pick cost. in data folder, cost is located between ',' and '$' sign.
+            index = content.IndexOf("$", index2);
+            //substringing and converting to intager
+            productCost = Convert.ToInt32(content.Substring(index2 + 1, index - index2 - 1));
+            return productCost * howMany;
+        }
+
+
+
+
+
+
+
 
 
     }

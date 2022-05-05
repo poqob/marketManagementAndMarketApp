@@ -1,0 +1,3 @@
+&sweater:stock,orderPrice
+&path of product's picture
+&explanation about product
