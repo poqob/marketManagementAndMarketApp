@@ -128,6 +128,16 @@ namespace Supliars
                     //deleting unnecessary edited tmp files.
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
                 }
+
+                if (File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob"))
+                {
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
+                }
+
+                if (File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp"))
+                {
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp");
+                }
             }
 
         }
@@ -135,7 +145,7 @@ namespace Supliars
         private void baseCreator(ref string company)
         {
             BackColor = Color.FromArgb(38, 38, 38);
-            string companyName=company;
+            string companyName = company;
             //heading
             label.Size = new Size(200, 55);
             label.Location = new Point(40, 40);
@@ -160,7 +170,7 @@ namespace Supliars
             ordersButton.Text = "see orders";
             ordersButton.ForeColor = Color.White;
             ordersButton.Tag = "base";
-            ordersButton.Click+=delegate(object sender, EventArgs e){ProductProcess.seeOrders(ref companyName);};
+            ordersButton.Click += delegate (object sender, EventArgs e) { ProductProcess.seeOrders(ref companyName); };
             Controls.Add(ordersButton);
 
 
@@ -216,6 +226,10 @@ namespace Supliars
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
                     File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
 
+                }
+                if (File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob"))
+                {
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
                 }
             }
 
@@ -306,7 +320,7 @@ namespace Supliars
                 button.BorderSize = 1;
                 button.BorderRadius = 5;
                 button.BorderColor = Color.White;
-                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum;ProductProcess.stockNumAdjusting(ref productInformationDirectory, ((int)numericUpDown.Maximum), ref wear); };
+                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum; ProductProcess.stockNumAdjusting(ref productInformationDirectory, ((int)numericUpDown.Maximum), ref wear); };
                 button.Text = "M";
                 Controls.Add(button);
                 button.BringToFront();
@@ -486,8 +500,19 @@ namespace Supliars
             File.WriteAllText(productInformationDirector, readFile);
         }
 
+        static string orders = "";
         static string[] catagories = { "woman", "man", "chıld" };
 
+        /*if user pressed on add to chart, products will be added to chart.
+        here i use 4 folder with same name but with different extansions.
+        the first is original txt files.
+        the second is .tmp file which is temporary file of .txt while user arranges it's orders.
+        the third one is .poqob extension file, i dunno why i keep it but i'll look for it at next times. note myself: i think it is useless because of fourth.
+        the fourth one is .poqobtmp file. it's first purpose is, keep .txt files backup when 'add to chart' is firstly pressed.
+        the second purpose of .poqobtmp file is, when you in the 'see orders' section.
+        if you allow your orders, the .poqobtmp file will be deleted. and original .txt file will be equal to be .tmp file.
+        if you won't have allowed, original .txt file will be equal to .poqobtmp file.
+        */
         public static void addToChartControll(ref string company, bool isAddToCharPressed)
         {
 
@@ -496,14 +521,20 @@ namespace Supliars
                 //TODO: delete txt files and convert tmp files to txt files.
                 foreach (string catagory in catagories)
                 {
+
                     File.Replace(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
-                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+
+
+                    File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                    if (!File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp"))
+                    {
+                        File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp");
+                    }
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
                 }
             }
             else
             {
-                //TODO:  make tmp file's -woman,man,child- contents same with txt files.
                 foreach (string catagory in catagories)
                 {
 
@@ -533,20 +564,59 @@ namespace Supliars
         then create new txt file to allStock file. 
         TODO: Design allStock file and it's data folder.
         */
-        static string orders;
         public static void seeOrders(ref string company)
         {
 
-            DialogResult result = MessageBox.Show("Do you want to order these below ?\n" + orders);
+            foreach (string catagory in catagories)
+            {
+                orders += "\n" + File.ReadAllText(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+            }
+            DialogResult result = MessageBox.Show("Do you want to order these below ?\n" + orders, "charts", MessageBoxButtons.YesNo);
 
+
+            /*
+            TODO: send shopping data to another new function. *if pressed yes
+            this function can generate special product information in it.
+            what would file contains ?
+            --firstly file's name will equal to product's name.
+            --file would have stock number.
+            --file would have product's that in cost's.
+            --file would have explanation about itself
+            --finally file would have its image path address to show on market place.
+            */
             if (result == DialogResult.Yes)
             {
                 foreach (string catagory in catagories)
                 {
+
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+
+                    File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp");
+
+                }
+            }
+            else
+            {
+                foreach (string catagory in catagories)
+                {
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+
+                    if (File.Exists(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp"))
+                    {
+                        File.Replace(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                    }
+
+
+
+                    File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
+                    //File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqob");
+
                     File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
                 }
             }
 
+            orders = "";
 
         }
 
