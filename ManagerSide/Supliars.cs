@@ -323,7 +323,7 @@ namespace Supliars
                 numericUpDown.Tag = wear;
                 numericUpDown.AllowDrop = false;
                 numericUpDown.ReadOnly = true;
-                numericUpDown.Click += delegate (object sender, EventArgs e) { ProductProcess.stockNumAndCostAdjusting(ref productInformationDirectory, ((int)numericUpDown.Value), ref wear); };
+                numericUpDown.Click += delegate (object sender, EventArgs e) { ProductProcess.stockNumAndCostAdjusting(ref productInformationDirectory, ((int)numericUpDown.Value), ref wear, ref companyName, ref fotoToDisplay, ref fileToDisplay, ref catagory); };
 
                 Controls.Add(numericUpDown);
                 numericUpDown.BringToFront();
@@ -335,7 +335,7 @@ namespace Supliars
                 button.BorderSize = 1;
                 button.BorderRadius = 5;
                 button.BorderColor = Color.White;
-                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum; ProductProcess.stockNumAndCostAdjusting(ref productInformationDirectory, ((int)numericUpDown.Maximum), ref wear); };
+                button.Click += delegate (object sender, EventArgs e) { numericUpDown.Value = numericUpDown.Maximum; ProductProcess.stockNumAndCostAdjusting(ref productInformationDirectory, ((int)numericUpDown.Maximum), ref wear, ref companyName, ref fotoToDisplay, ref fileToDisplay, ref catagory); };
                 button.Text = "M";
                 Controls.Add(button);
                 button.BringToFront();
@@ -470,10 +470,19 @@ namespace Supliars
     static class ProductProcess
     {
 
+        //variables for orders operations
+        static int howmany;
+        static string whichproduct;
+        static string fotodata;
+        static string productexplanation;
+        static string productInformationdirector;
+        static string orderContent = "";
+        static string companyname;
 
+        static string catagori;
 
         //apply dynamic stock changes to the tmp file
-        public static void stockNumAndCostAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct)
+        public static void stockNumAndCostAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct, ref string company, ref string fotoData, ref string productExplanation, ref string catagory)
         {
 
             //reading information files.
@@ -512,12 +521,12 @@ namespace Supliars
 
 
             //TODO: getting order price is done. now i'll create order file which is like in orders folder 'ertanSweater.txt'.
-                    //and attempt neccesary datas to in it.
-                    //name,stock,total price,image path,explanation about product
-                    //then we will use this .txt file as market product if user allowed shopping.
-                    //if shopping has allowed, this file will have moved to 'allStock' folder.
-                    //then if market managament wants, can move the products to market place 'productsForSale'.
-                    //and finally user can see and bought products from market, from this folder.
+            //and attempt neccesary datas to in it.
+            //name,stock,total price,image path,explanation about product
+            //then we will use this .txt file as market product if user allowed shopping.
+            //if shopping has allowed, this file will have moved to 'allStock' folder.
+            //then if market managament wants, can move the products to market place 'productsForSale'.
+            //and finally user can see and bought products from market, from this folder.
 
             if (!File.Exists(productInformationDirector.Substring(0, productInformationDirector.Length - 3) + ".poqobtmp"))
             {
@@ -533,7 +542,67 @@ namespace Supliars
 
 
 
+
+            //creating fake orders. with .tmp file extension
+            //if the user pressed see orders and allow the question then this fake orders will be true.
+            howmany = howMany;
+            whichproduct = whichProduct;
+            fotodata = fotoData;
+            productexplanation = productExplanation;
+            productInformationdirector = productInformationDirector;
+            companyname = company;
+            catagori = catagory;
+            orderFolderController();
+
+
         }
+
+
+
+        static void orderFolderController()
+        {
+            if (!File.Exists(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp"))
+            {
+                //if there is no order file, program will create one.
+                StreamWriter sw = new StreamWriter(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp");
+                sw.Close();
+                sw.Dispose();
+            }
+            else
+            {
+                //creating fake order content
+                orderContent = "";
+                orderContent += "&" + whichproduct.Substring(0, whichproduct.Length - 1) + ":" + howmany + "," + getProductCost(ref productInformationdirector, ref whichproduct, ref howmany) + "$\n";
+                orderContent += "&" + fotodata + "\n";
+                orderContent += "&" + productexplanation + "\n";
+                //writing fake order to orders folder
+                File.WriteAllText(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp", orderContent);
+            }
+        }
+
+        //if user allowed the order, .tmp file will have been .txt file.
+        //so fake orders have been true.
+        static void orderFolderControllerAllowing()
+        {
+            //find all .tmp files and make an array with them.
+            System.Collections.Generic.IEnumerable<string> files = Directory.EnumerateFiles(@"datas\orders\", "*.tmp", SearchOption.AllDirectories);
+
+            foreach (var file in files)
+            {
+
+                if (!File.Exists(file.Substring(0, file.Length - 3) + "txt"))
+                {
+                    File.Copy(file, file.Substring(0, file.Length - 3) + "txt");
+                    File.Delete(file);
+                }
+                else
+                {
+                    //******* old value and new value should not be confused.
+                }
+
+            }
+        }
+
 
         static string orders = "";
         static string[] catagories = { "woman", "man", "chıld" };
@@ -629,9 +698,8 @@ namespace Supliars
 
                     File.Copy(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".txt", @"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".tmp");
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp");
-
-
                 }
+                orderFolderControllerAllowing();
             }
             else
             {
