@@ -1,3 +1,0 @@
-&TER:4,48$
-&datas\suppliers\HOOMAN\fotoData\WOMAN\1.png
-&datas\suppliers\HOOMAN\fotoData\WOMAN\1.txt

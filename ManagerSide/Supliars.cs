@@ -138,7 +138,11 @@ namespace Supliars
                 {
                     File.Delete(@"datas\suppliers\" + company + @"\" + catagory.ToUpper() + ".poqobtmp");
                 }
+
             }
+
+            Directory.Delete(@"datas\orders", true);
+            Directory.CreateDirectory(@"datas\orders");
 
         }
 
@@ -558,7 +562,7 @@ namespace Supliars
         }
 
 
-
+        //TESTING
         static void orderFolderController()
         {
             if (!File.Exists(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp"))
@@ -568,16 +572,16 @@ namespace Supliars
                 sw.Close();
                 sw.Dispose();
             }
-            else
-            {
-                //creating fake order content
-                orderContent = "";
-                orderContent += "&" + whichproduct.Substring(0, whichproduct.Length - 1) + ":" + howmany + "," + getProductCost(ref productInformationdirector, ref whichproduct, ref howmany) + "$\n";
-                orderContent += "&" + fotodata + "\n";
-                orderContent += "&" + productexplanation + "\n";
-                //writing fake order to orders folder
-                File.WriteAllText(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp", orderContent);
-            }
+
+
+            //creating fake order content
+            orderContent = "";
+            orderContent += "&" + whichproduct.Substring(0, whichproduct.Length - 1) + ":" + howmany + "," + getProductCost(ref productInformationdirector, ref whichproduct, ref howmany) + "$\n";
+            orderContent += "&" + fotodata + "\n";
+            orderContent += "&" + productexplanation + "\n";
+            //writing fake order to orders folder
+            File.WriteAllText(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp", orderContent);
+
         }
 
         //if user allowed the order, .tmp file will have been .txt file.
@@ -586,19 +590,96 @@ namespace Supliars
         {
             //find all .tmp files and make an array with them.
             System.Collections.Generic.IEnumerable<string> files = Directory.EnumerateFiles(@"datas\orders\", "*.tmp", SearchOption.AllDirectories);
-
+            string catagory = "";
             foreach (var file in files)
             {
 
-                if (!File.Exists(file.Substring(0, file.Length - 3) + "txt"))
+                //determining in which catagory we work.
+                //firstly looking for woman because, man already in woman as word.
+                if (file.Contains("WOMAN"))
                 {
-                    File.Copy(file, file.Substring(0, file.Length - 3) + "txt");
+                    catagory = "WOMAN";
+                }
+                else if (file.Contains("CHILD"))
+                {
+                    catagory = "CHILD";
+
+                }
+                else if (file.Contains("MAN"))
+                {
+                    catagory = "MAN";
+                }
+
+                if (File.Exists(file.Substring(0, file.Length - 3) + "txt"))
+                {
+                    File.Delete(file.Substring(0, file.Length - 3) + "txt");
+                }
+
+                //copy new .txt from .tmp
+                File.Copy(file, file.Substring(0, file.Length - 3) + "txt");
+
+
+                //contolls if file is already exists in allStock, according to this step the code will move .txt or the code will reflesh existed file values.
+                if (!File.Exists(@"datas\allStock\" + catagory + @"\" + file.Substring(13, file.Length - 16) + "txt"))
+                {
+                    //move .txt to allStock
+                    File.Move(file.Substring(0, file.Length - 3) + "txt", @"datas\allStock\" + catagory + @"\" + file.Substring(13, file.Length - 16) + "txt");
+                    //deleting .tmp
                     File.Delete(file);
                 }
                 else
                 {
-                    //******* old value and new value should not be confused.
+                    //here the program gonna reflesh oldOrderFile's first line.
+                    //basicly add new stock number and total cost to old one.
+                    //and the program gonna delete newOrderFile.
+                    string oldOrderFile = File.ReadAllText(@"datas\allStock\" + catagory + @"\" + file.Substring(13, file.Length - 16) + "txt");
+                    string newOrderFile = File.ReadAllText(file.Substring(0, file.Length - 3) + "txt");
+
+                    //indexes for old file.
+                    //there is stock number between 0-1 and cost 1-2
+                    int index0 = oldOrderFile.IndexOf(":") + 1;
+                    int index1 = oldOrderFile.IndexOf(",");
+                    int index2 = oldOrderFile.IndexOf("$");
+
+                    int oldStockNumber = Convert.ToInt32(oldOrderFile.Substring(index0, index1 - index0));
+                    int oldCost = Convert.ToInt32(oldOrderFile.Substring(index1 + 1, index2 - index1 - 1));
+
+                    //indexes for new file.
+                    //same for new file.
+                    index0 = newOrderFile.IndexOf(":") + 1;
+                    index1 = newOrderFile.IndexOf(",");
+                    index2 = newOrderFile.IndexOf("$");
+                    int newStockNumber = Convert.ToInt32(newOrderFile.Substring(index0, index1 - index0));
+                    int newCost = Convert.ToInt32(newOrderFile.Substring(index1 + 1, index2 - index1 - 1));
+
+                    //refleshing numbers of oldOrderFile txt
+                    oldOrderFile = oldOrderFile.Replace(oldStockNumber.ToString(), (newStockNumber + oldStockNumber).ToString());
+                    //oldOrderFile = oldOrderFile.Replace(oldCost.ToString(), (newCost + oldCost).ToString());
+
+                    oldOrderFile = oldOrderFile.Remove(index1 + 2, index2 - index1);
+                    oldOrderFile = oldOrderFile.Insert(index1 + 2, (newCost + oldCost).ToString());
+
+                    //writing edited data to already existed old order file.
+                    File.WriteAllText(@"datas\allStock\" + catagory + @"\" + file.Substring(13, file.Length - 16) + "txt", oldOrderFile);
+
+
+                    //deleting .tmp
+                    File.Delete(file);
+
+
                 }
+
+                //making a provide.
+                if (File.Exists(file.Substring(0, file.Length - 3) + "txt"))
+                {
+                    File.Delete(file.Substring(0, file.Length - 3) + "txt");
+                }
+
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
+
 
             }
         }
