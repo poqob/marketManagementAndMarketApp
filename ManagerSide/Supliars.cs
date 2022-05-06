@@ -474,7 +474,8 @@ namespace Supliars
     static class ProductProcess
     {
 
-        //variables for orders operations
+        //variables for orders operations.
+        //local variables keeps file datas.
         static int howmany;
         static string whichproduct;
         static string fotodata;
@@ -485,7 +486,7 @@ namespace Supliars
 
         static string catagori;
 
-        //apply dynamic stock changes to the tmp file
+        //apply dynamic stock changes to the tmp file.
         public static void stockNumAndCostAdjusting(ref string productInformationDirector, int howMany, ref string whichProduct, ref string company, ref string fotoData, ref string productExplanation, ref string catagory)
         {
 
@@ -562,9 +563,9 @@ namespace Supliars
         }
 
 
-        //TESTING
         static void orderFolderController()
         {
+            //formating.
             string product = "";
             if (whichproduct.Contains("IRT"))
             {
@@ -791,7 +792,7 @@ namespace Supliars
             DialogResult result = MessageBox.Show("Do you want to order these below ?\n" + orders, "charts", MessageBoxButtons.YesNo);
 
 
-            /*
+            /*i did it
             TODO: send shopping data to another new function. *if pressed yes
             this function can generate special product information in it.
             what would file contains ?
@@ -836,44 +837,7 @@ namespace Supliars
             orders = "";
 
         }
-
-        static int getStockNum(ref string productInformationDirectory, ref int whichProduct)
-        {
-            //1=sweater ,2=tshirt, 3=pants
-            //read product information (that has stock information in it) file.
-            string content = File.ReadAllText(productInformationDirectory);
-            string wear;
-            int stockNum;
-            //determining to get which product stock number.
-            switch (whichProduct)
-            {
-                case 1:
-                    //SWEATER's ER:
-                    wear = "TER:";
-                    break;
-                case 2:
-                    //T-SHIRT's RT:
-                    wear = "IRT:";
-                    break;
-                case 3:
-                    //PANTS's TS:
-                    wear = "NTS:";
-                    break;
-                default:
-                    wear = "";
-                    break;
-            }
-
-            //find related data line in information folder.
-            int index = content.IndexOf(wear) + 4;
-            //find first ','comma sign in related line.
-            int index2 = content.IndexOf(",", index);
-
-            //substringing and converting to intager
-            stockNum = Convert.ToInt32(content.Substring(index, index2 - index));
-
-            return stockNum;
-        }
+        //this function can getch related product's cost information from product information directory.
         static double getProductCost(ref string productInformationDirectory, ref string whichProduct, ref int howMany)
         {
 
@@ -912,7 +876,46 @@ namespace Supliars
             }
         }
     }
-
-
-
 }
+
+/*
+TODO:
+
+MANAGER SIDE
+marketPlace will have been coded.
+stocks window will have been coded.
+expenses and sales window will have been coded.
+orders will have been coded.
+
+markerplace
+functions
+-transfer product to productsForSale from allStock.
+
+stocks
+functions
+-arrange products stock price.
+-see stocks
+
+orders
+functions
+-see given orders by customers.
+
+*************************************************
+*************************************************
+
+CUSTOMER SIDE
+marketPlace will have been coded.
+orders will have been coded.
+stocks window will have been coded.
+
+markerplace
+functions
+-customer can buy products by selecting them.
+
+orders
+functions
+-see given orders.
+
+
+
+*/
