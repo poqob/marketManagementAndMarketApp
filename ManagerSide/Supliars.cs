@@ -565,10 +565,25 @@ namespace Supliars
         //TESTING
         static void orderFolderController()
         {
-            if (!File.Exists(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp"))
+            string product = "";
+            if (whichproduct.Contains("IRT"))
             {
+                product = "t_shirt";
+            }
+            else if (whichproduct.Contains("NTS"))
+            {
+                product = "pants";
+            }
+            else if (whichproduct.Contains("TER"))
+            {
+                product = "sweater";
+            }
+
+            if (!File.Exists(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + product + ".tmp"))
+            {
+
                 //if there is no order file, program will create one.
-                StreamWriter sw = new StreamWriter(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp");
+                StreamWriter sw = new StreamWriter(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + product + ".tmp");
                 sw.Close();
                 sw.Dispose();
             }
@@ -576,11 +591,11 @@ namespace Supliars
 
             //creating fake order content
             orderContent = "";
-            orderContent += "&" + whichproduct.Substring(0, whichproduct.Length - 1) + ":" + howmany + "," + getProductCost(ref productInformationdirector, ref whichproduct, ref howmany) + "$\n";
+            orderContent += "&" + product + ":" + howmany + "," + getProductCost(ref productInformationdirector, ref whichproduct, ref howmany) + "$\n";
             orderContent += "&" + fotodata + "\n";
             orderContent += "&" + productexplanation + "\n";
             //writing fake order to orders folder
-            File.WriteAllText(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + whichproduct.Substring(0, whichproduct.Length - 1).ToLower() + ".tmp", orderContent);
+            File.WriteAllText(@"datas\orders\" + companyname.ToLower() + catagori.ToUpper() + product + ".tmp", orderContent);
 
         }
 
@@ -588,9 +603,10 @@ namespace Supliars
         //so fake orders have been true.
         static void orderFolderControllerAllowing()
         {
-            //find all .tmp files and make an array with them.
+            //find all .tmp files and make an array with them. in orders folder
             System.Collections.Generic.IEnumerable<string> files = Directory.EnumerateFiles(@"datas\orders\", "*.tmp", SearchOption.AllDirectories);
             string catagory = "";
+            string product = "";
             foreach (var file in files)
             {
 
@@ -610,6 +626,23 @@ namespace Supliars
                     catagory = "MAN";
                 }
 
+
+                //formating file content
+                if (file.Contains("ırt") || file.Contains("t_shirt"))
+                {
+                    product = "t_shirt";
+                }
+                else if (file.Contains("nts") || file.Contains("pants"))
+                {
+                    product = "pants";
+                }
+                else if (file.Contains("ter") || file.Contains("sweater"))
+                {
+                    product = "sweater";
+                }
+
+
+                //against to an error of wrong deletion process.
                 if (File.Exists(file.Substring(0, file.Length - 3) + "txt"))
                 {
                     File.Delete(file.Substring(0, file.Length - 3) + "txt");
@@ -652,14 +685,12 @@ namespace Supliars
                     int newStockNumber = Convert.ToInt32(newOrderFile.Substring(index0, index1 - index0));
                     int newCost = Convert.ToInt32(newOrderFile.Substring(index1 + 1, index2 - index1 - 1));
 
-                    //refleshing numbers of oldOrderFile txt
-                    oldOrderFile = oldOrderFile.Replace(oldStockNumber.ToString(), (newStockNumber + oldStockNumber).ToString());
-                    //oldOrderFile = oldOrderFile.Replace(oldCost.ToString(), (newCost + oldCost).ToString());
+                    string fotoPath = oldOrderFile.Substring(oldOrderFile.IndexOf("&", 2) - 1, oldOrderFile.IndexOf(".png") + 5 - oldOrderFile.IndexOf("&", 2));
+                    string explanationPath = oldOrderFile.Substring(oldOrderFile.IndexOf("&", oldOrderFile.IndexOf(".png")));
 
-                    oldOrderFile = oldOrderFile.Remove(index1 + 2, index2 - index1);
-                    oldOrderFile = oldOrderFile.Insert(index1 + 2, (newCost + oldCost).ToString());
-
-                    //writing edited data to already existed old order file.
+                    //writing new order file with new values
+                    oldOrderFile = "";
+                    oldOrderFile = "&" + product + ":" + (newStockNumber + oldStockNumber).ToString() + "," + (newCost + oldCost).ToString() + "$" + fotoPath + "\n" + explanationPath;
                     File.WriteAllText(@"datas\allStock\" + catagory + @"\" + file.Substring(13, file.Length - 16) + "txt", oldOrderFile);
 
 
@@ -806,13 +837,6 @@ namespace Supliars
 
         }
 
-
-
-
-
-
-
-
         static int getStockNum(ref string productInformationDirectory, ref int whichProduct)
         {
             //1=sweater ,2=tshirt, 3=pants
@@ -869,14 +893,6 @@ namespace Supliars
             productCost = Convert.ToInt32(content.Substring(index2 + 1, index - index2 - 1));
             return productCost * howMany;
         }
-
-
-
-
-
-
-
-
 
     }
 

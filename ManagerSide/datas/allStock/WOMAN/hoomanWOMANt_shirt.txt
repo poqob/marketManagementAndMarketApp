@@ -1,0 +1,3 @@
+&t_shirt:22,154$
+&datas\suppliers\HOOMAN\fotoData\WOMAN\2.png
+&datas\suppliers\HOOMAN\fotoData\WOMAN\2.txt

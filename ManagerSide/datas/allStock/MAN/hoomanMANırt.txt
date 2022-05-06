@@ -1,3 +1,0 @@
-&IRT:30,192$
-&datas\suppliers\HOOMAN\fotoData\MAN\2.png
-&datas\suppliers\HOOMAN\fotoData\MAN\2.txt
