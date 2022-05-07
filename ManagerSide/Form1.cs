@@ -11,6 +11,7 @@ using CustomControls.RJControls;
 using RoundBorderLabel;
 using CustomerPage;
 using Supliars;
+using Stock;
 
 namespace ndpProje
 {
@@ -105,7 +106,9 @@ namespace ndpProje
 
         private void stocks(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Stocks stocksPage=new Stocks();
+            stocksPage.Size=new Size(800,500);
+            stocksPage.ShowDialog();
         }
 
         private void customers(object sender, EventArgs e)
