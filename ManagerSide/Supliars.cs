@@ -691,7 +691,7 @@ namespace Supliars
 
                     //writing new order file with new values
                     oldOrderFile = "";
-                    oldOrderFile = "&" + product + ":" + (newStockNumber + oldStockNumber).ToString() + "," + (newCost + oldCost).ToString() + "$" + fotoPath + "\n" + explanationPath;
+                    oldOrderFile = "&" + product + ":" + (newStockNumber + oldStockNumber).ToString() + "," + (oldCost + newCost).ToString() + "$" + fotoPath + "\n" + explanationPath;
                     File.WriteAllText(@"datas\allStock\" + catagory + @"\" + file.Substring(13, file.Length - 16) + "txt", oldOrderFile);
 
 

@@ -82,7 +82,6 @@ namespace Stock
             string price;
             string brandAndProduct;
             string currentFileContent;
-            string explanation;
             int index;
             int index0;
 
@@ -98,6 +97,7 @@ namespace Stock
                     //getting brand and product name to variable.
                     brandAndProduct = file.Substring(16 + catagory.Length, file.IndexOf(catagory.ToUpper(), 16 + catagory.Length) - 16 - catagory.Length) + " ";
                     brandAndProduct += file.Substring(file.IndexOf(catagory.ToUpper(), 16 + catagory.Length) + catagory.Length, file.Length - 4 - (file.IndexOf(catagory.ToUpper(), 16 + catagory.Length) + catagory.Length));
+                    string fileName = file.Substring(16 + catagory.Length, file.Length - 16 - catagory.Length);
                     // brandAndProduct += "\n";
 
                     //read which file we are dealing.
@@ -107,7 +107,6 @@ namespace Stock
                     //getting stock number as string.
                     index = currentFileContent.IndexOf(",");
                     index0 = currentFileContent.IndexOf(":");
-
                     stockNumber = currentFileContent.Substring(index0 + 1, index - index0 - 1);
 
                     //getting price number as string.
@@ -119,13 +118,10 @@ namespace Stock
                     index = currentFileContent.IndexOf("\n", index0);
                     fotoPath = currentFileContent.Substring(index0, index - index0);
 
-                    //getting product explanation data.
-                    index0 = currentFileContent.IndexOf("&", index) + 1;
-                    index = currentFileContent.IndexOf("\n", index0);
-                    explanation = currentFileContent.Substring(index0, index - index0);
+
 
                     //creating button widged according to parameters that above.
-                    ContentWidget modalWidget = new ContentWidget(ref fotoPath, (Convert.ToInt32(price) / Convert.ToInt32(stockNumber)).ToString(), ref stockNumber, ref brandAndProduct, ref explanation);
+                    ContentWidget modalWidget = new ContentWidget(ref fotoPath, Convert.ToInt32((Convert.ToInt32(price) / Convert.ToInt32(stockNumber))).ToString(), ref stockNumber, ref brandAndProduct, file, ref fileName);
                     modalWidget.Size = new Size(120, 150);
                     panel.Controls.Add(modalWidget);
                     modalWidget.BringToFront();

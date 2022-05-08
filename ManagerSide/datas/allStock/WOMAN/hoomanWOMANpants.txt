@@ -1,3 +1,0 @@
-&pants:6,66$
-&datas\suppliers\HOOMAN\fotoData\WOMAN\3.png
-&datas\suppliers\HOOMAN\fotoData\WOMAN\3.txt

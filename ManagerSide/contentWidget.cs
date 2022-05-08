@@ -18,16 +18,21 @@ namespace PQContentWidget
         Font ItalicFont = new Font("Arial", 6, FontStyle.Italic);
         PictureBox pictureBox1 = new PictureBox();
         private string fotoToDisplay;
+
+        private string filePath;
         private string price;
         private string stock;
+        private string fileName;
         private string productBrandAndName;
-        public ContentWidget(ref string fotoPath, string price, ref string stock, ref string brandAndName, ref string explanation)
+        public ContentWidget(ref string fotoPath, string price, ref string stock, ref string brandAndName, string filePath, ref string fileName)
         {
             //attempting parameters to variables.
             this.fotoToDisplay = fotoPath;
             this.productBrandAndName = brandAndName;
             this.price = price;
             this.stock = stock;
+            this.filePath = filePath;
+            this.fileName = fileName;
             this.BackColor = Color.FromArgb(30, 30, 30);
             widget();
         }
@@ -63,7 +68,7 @@ namespace PQContentWidget
 
             this.Click += delegate (object sender, EventArgs e)
             {
-                ProductPricingPage pricingPage = new ProductPricingPage(ref price, ref productBrandAndName);
+                ProductPricingPage pricingPage = new ProductPricingPage(ref price, ref stock, ref productBrandAndName, ref filePath, ref fileName);
                 pricingPage.Size = new Size(400, 600);
                 pricingPage.ShowDialog();
             };
@@ -77,10 +82,13 @@ namespace PQContentWidget
         bool answer;
         string brandAndName;
         string oldPrice;
+        string stock;
+        string filePath;
+        string fileName;
 
-        Label label = new Label();
+        Label label = new Label();//do question label
 
-        Label label1 = new Label();//please enter num warning
+        Label label1 = new Label();//please enter num warning label
 
         TextBox textBox = new TextBox();
         Font font = new Font("Arial", 12, FontStyle.Regular);
@@ -89,10 +97,13 @@ namespace PQContentWidget
         RJButton buttonNo = new RJButton();
 
 
-        public ProductPricingPage(ref string price, ref string productBrandAndName)
+        public ProductPricingPage(ref string price, ref string stock, ref string productBrandAndName, ref string filePath, ref string fileName)
         {
             this.oldPrice = price;
             this.brandAndName = productBrandAndName;
+            this.filePath = filePath;
+            this.stock = stock;
+            this.fileName = fileName;
             dialogBuilder();
         }
 
@@ -138,7 +149,7 @@ namespace PQContentWidget
             buttonYes.BorderColor = Color.White;
             buttonYes.Font = new Font("Arial", 12, FontStyle.Italic);
             buttonYes.Text = "yes";
-            buttonYes.Click += delegate (object s, EventArgs e) { };
+            buttonYes.Click += delegate (object s, EventArgs e) { answer = true; action(ref answer, ref filePath, ref stock); };
             Controls.Add(buttonYes);
             buttonYes.BringToFront();
 
@@ -153,15 +164,53 @@ namespace PQContentWidget
             buttonNo.BorderColor = Color.White;
             buttonNo.Text = "no";
             buttonNo.Font = new Font("Arial", 12, FontStyle.Italic);
-            buttonNo.Click += delegate (object s, EventArgs e) { };
+            buttonNo.Click += delegate (object s, EventArgs e) { answer = false; action(ref answer, ref filePath, ref stock); };
             Controls.Add(buttonNo);
             buttonNo.BringToFront();
 
         }
+
+        //controlling which button pressed and also taking action according to choosem.
+        private void action(ref bool answer, ref string filePath, ref string stock)
+        {
+            //if answer is not true do nothing and exit small page.
+            if (answer != true)
+            {
+                this.Dispose();
+                this.Enabled = false;
+            }
+            //else answer is true, apply changes to product folder.
+            else
+            {
+
+                //fetching file data
+                string file = File.ReadAllText(filePath);
+                int index0 = file.IndexOf(",") + 1;
+                int index1 = file.IndexOf("$");
+
+                //getting old total price from file to obtain unit price.
+                int oldTotalPrice = Convert.ToInt32(file.Substring(index0, index1 - index0));
+
+                //calculating new totalPrice
+                string newTotalPrice = (Convert.ToInt32(textBox.Text) * Convert.ToInt32(stock)).ToString();
+
+                //changes
+                file = file.Remove(index0, index1 - index0);
+                file = file.Insert(index0, newTotalPrice);
+
+                //apply changes
+                File.WriteAllText(filePath, file);
+
+                //moving filePath file to market place folder which is productForSale.
+                File.Move(filePath, @"datas\productsForSale\" + fileName);
+                this.Dispose();
+                this.Enabled = false;
+            }
+        }
     }
 }
 
-//TODO: i was coding button yes and no's click function.
+//TODO: 
 //the input area only accepts number
 //if user press yes, move the file to productForSale folder.
 // think about is product can be seen while in productForSale or isn't.
