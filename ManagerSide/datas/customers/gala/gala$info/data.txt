@@ -1,0 +1,4 @@
+&name:gala
+&password:12345
+&gender:male
+&balance:1000

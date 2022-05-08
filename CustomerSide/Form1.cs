@@ -11,6 +11,7 @@ using CustomControls.RJControls;
 using RoundBorderLabel;
 using System.Text.RegularExpressions;
 using System.IO;
+using CustomerSide;
 
 namespace ndpProje
 {
@@ -131,7 +132,9 @@ namespace ndpProje
         {
             SignUpForm signUpPage = new SignUpForm();
             signUpPage.Size = new Size(800, 500);
+            this.Hide();
             signUpPage.ShowDialog();
+            this.Show();
         }
 
 
@@ -143,11 +146,16 @@ namespace ndpProje
 
             if (passwordControll(ref currentPassword, ref folderName, nameControll(ref name, ref folderName), ref name))
             {
-                //shift to new form
-                //the market page
+                //start marketplacePage
+                Market market = new Market(ref name);
+                market.Size = this.Size;
+                
+                this.Hide();
+                market.ShowDialog();
+
             }
 
-            
+
 
         }
 

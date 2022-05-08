@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using CustomControls.RJControls;
 using RoundBorderLabel;
 using System.Text.RegularExpressions;
+using CustomerSide;
 
 class SignUpForm : Form
 {
@@ -241,10 +242,14 @@ class SignUpForm : Form
         sw.Close();
         sw.Dispose();
 
-        //creating txt file that is include customer's orders
-        sw = new StreamWriter(folderName + @"\" + name + "$order" + @"\" + "data.txt");
-        sw.Close();
-        sw.Dispose();
+
+        //start marketplacePage
+        Market market=new Market(ref name);
+        market.Size=this.Size;
+        market.ShowDialog();
+        this.Dispose();
+        this.Close();
+
     }
 
 

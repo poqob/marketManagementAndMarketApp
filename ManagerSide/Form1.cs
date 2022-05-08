@@ -108,14 +108,18 @@ namespace ndpProje
         {
             Stocks stocksPage=new Stocks();
             stocksPage.Size=new Size(800,500);
+            this.Hide();
             stocksPage.ShowDialog();
+            this.Show();
         }
 
         private void customers(object sender, EventArgs e)
         {
             CustomersPage customerPage=new CustomersPage();
             customerPage.Size=new Size(800, 500);
+            this.Hide();
             customerPage.ShowDialog();
+            this.Show();
             
         }
 
@@ -123,7 +127,9 @@ namespace ndpProje
         {
             SupliarsMarketPlace supliarsPage=new SupliarsMarketPlace();
             supliarsPage.Size=new Size(800, 500);
+            this.Hide();
             supliarsPage.ShowDialog();
+            this.Show();
         }
     }
 }

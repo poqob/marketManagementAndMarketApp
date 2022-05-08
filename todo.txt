@@ -1,20 +1,8 @@
-TODO:
+TODO
 
 MANAGER SIDE
-marketPlace will have been coded.
-stocks window will have been coded.
 expenses and sales window will have been coded.
 orders will have been coded.
-
-markerplace
-functions
--transfer product to productsForSale from allStock.
-
-stocks
-functions
--arrange products stock price.
--see stocks
-
 orders
 functions
 -see given orders by customers.
@@ -27,13 +15,27 @@ marketPlace will have been coded.
 orders will have been coded.
 stocks window will have been coded.
 
-markerplace
+marketplace
 functions
--customer can buy products by selecting them.
+-customer can buy products . products will have been a widget type which has numericalDecreaseIncrease.
+-made from an appBar,marketSide,ordered products side.
+-customer can change it's data via customerDataChanger.cs class
 
 orders
 functions
--see given orders.
+-see given orders in flowLayoutPanel as button widget
 
 
+
+
+
+
+
+
+
+
+
+notes:
+
+still there are some todos below of the contentWidget.cs
 
