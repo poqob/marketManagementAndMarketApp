@@ -11,7 +11,7 @@ using CustomControls.RJControls;
 using RoundBorderLabel;
 using System.Text.RegularExpressions;
 using System.IO;
-using CustomerSide;
+using OrdersPage;
 
 namespace ndpProje
 {
@@ -58,6 +58,7 @@ namespace ndpProje
             userName.Size = new Size(220, 25);
             userName.Location = new Point(300, 180);
             userName.PlaceholderText = "username";
+            userName.Text = "gala";//*************************************************************************************************
             userName.TextChanged += new System.EventHandler(changeOfUserName);
             userName.BackColor = BackColor;
             userName.ForeColor = Color.Black;
@@ -70,6 +71,7 @@ namespace ndpProje
             pass.Size = new Size(220, 25);
             pass.Location = new Point(300, 240);
             pass.PlaceholderText = "password";
+            pass.Text = "12345";//***************************************************************************************************
             pass.TextChanged += new System.EventHandler(changeOfPassword);
 
             pass.BackColor = BackColor;
@@ -147,11 +149,12 @@ namespace ndpProje
             if (passwordControll(ref currentPassword, ref folderName, nameControll(ref name, ref folderName), ref name))
             {
                 //start marketplacePage
-                Market market = new Market(ref name);
+                Market market = new Market(ref name, ref folderName);
                 market.Size = this.Size;
-                
+
                 this.Hide();
                 market.ShowDialog();
+                this.Show();
 
             }
 

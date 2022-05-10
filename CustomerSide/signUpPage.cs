@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using CustomControls.RJControls;
 using RoundBorderLabel;
 using System.Text.RegularExpressions;
-using CustomerSide;
+using OrdersPage;
 
 class SignUpForm : Form
 {
