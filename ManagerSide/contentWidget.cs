@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using CustomControls.RJControls;
 using RoundBorderLabel;
+using System.Text.RegularExpressions;
 
 //this widget takes some parameters -product picture path, product price, product stock number, product brand- and according to parameters code will create a structure.
 //i'm planing to do something like flutter widget.
@@ -85,6 +86,8 @@ namespace PQContentWidget
         string stock;
         string filePath;
         string fileName;
+        Regex numRegex = new Regex(@"^\d$");
+
 
         Label label = new Label();//do question label
 
@@ -124,6 +127,8 @@ namespace PQContentWidget
             textBox.BackColor = BackColor;
             textBox.ForeColor = Color.White;
             textBox.Text = this.oldPrice;
+
+            textBox.TextChanged += delegate (object sender, EventArgs e) { inputController(this.textBox.Text); };
             textBox.Location = new Point(40, 150);
             textBox.Size = new Size(100, 80);
             Controls.Add(textBox);
@@ -170,6 +175,22 @@ namespace PQContentWidget
 
         }
 
+        private void inputController(string input)
+        {
+
+            foreach (char l in input)
+            {
+                if (!numRegex.IsMatch(l.ToString()))
+                {
+                    this.textBox.Text = this.textBox.Text.Remove(this.textBox.Text.Length - 1, 1);
+                }
+            }
+            if (input == "0")
+            {
+                this.textBox.Text = oldPrice;
+            }
+        }
+
         //controlling which button pressed and also taking action according to choosem.
         private void action(ref bool answer, ref string filePath, ref string stock)
         {
@@ -182,31 +203,41 @@ namespace PQContentWidget
             //else answer is true, apply changes to product folder.
             else
             {
+                if (this.textBox.Text != "")
+                {
 
-                //fetching file data
-                string file = File.ReadAllText(filePath);
-                int index0 = file.IndexOf(",") + 1;
-                int index1 = file.IndexOf("$");
+                    //fetching file data
+                    string file = File.ReadAllText(filePath);
+                    int index0 = file.IndexOf(",") + 1;
+                    int index1 = file.IndexOf("$");
 
-                //getting old total price from file to obtain unit price.
-                int oldTotalPrice = Convert.ToInt32(file.Substring(index0, index1 - index0));
+                    //getting old total price from file to obtain unit price.
+                    int oldTotalPrice = Convert.ToInt32(file.Substring(index0, index1 - index0));
 
-                //calculating new totalPrice
-                string newTotalPrice = (Convert.ToInt32(textBox.Text) * Convert.ToInt32(stock)).ToString();
+                    //calculating new totalPrice
+                    string newTotalPrice = (Convert.ToInt32(textBox.Text) * Convert.ToInt32(stock)).ToString();
 
-                //changes
-                file = file.Remove(index0, index1 - index0);
-                file = file.Insert(index0, newTotalPrice);
+                    //changes
+                    file = file.Remove(index0, index1 - index0);
+                    file = file.Insert(index0, newTotalPrice);
 
-                //apply changes
-                File.WriteAllText(filePath, file);
+                    //apply changes
+                    File.WriteAllText(filePath, file);
 
-                //moving filePath file to market place folder which is productForSale.
-                File.Move(filePath, @"datas\productsForSale\" + fileName);
-                this.Dispose();
-                this.Enabled = false;
+                    //moving filePath file to market place folder which is productForSale.
+                    File.Move(filePath, @"datas\productsForSale\" + fileName);
+                    this.Dispose();
+                    this.Enabled = false;
+                }
+                else
+                {
+                    this.label1.Text = "Input can't be empty";
+                }
+
             }
         }
+
+
     }
 }
 

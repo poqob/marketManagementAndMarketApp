@@ -1,0 +1,3 @@
+&sweater:5,65$
+&datas\suppliers\ASPAVA\fotoData\MAN\1.png
+&datas\suppliers\ASPAVA\fotoData\MAN\1.txt

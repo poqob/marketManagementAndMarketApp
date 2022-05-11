@@ -7,7 +7,7 @@ using RoundBorderLabel;
 
 namespace PQContentWidget
 {
-    public class StocksWidget : Label
+    public class MarketContentWidget : Label
     {
         //variables
         RoundLabel baseLabel = new RoundLabel();
@@ -19,7 +19,7 @@ namespace PQContentWidget
         private string stock;
         private string productBrandAndName;
 
-        public StocksWidget(ref string fotoPath, string unitPrice, ref string totalStock, ref string brandAndName, ref string explanation)
+        public MarketContentWidget(ref string fotoPath, string unitPrice, ref string totalStock, ref string brandAndName,ref string explanation)
         {
             //attempting parameters to variables.
             this.fotoToDisplay = fotoPath;
@@ -43,7 +43,7 @@ namespace PQContentWidget
             baseLabel.borderColor = Color.White;
             baseLabel.BorderStyle = BorderStyle.None;
             baseLabel.Location = new Point(10, 80);
-            baseLabel.Text = productBrandAndName + "\nStock:" + stock + "\nPrice:" + price + "$";
+            baseLabel.Text = productBrandAndName + "\nStock:" + stock + "\nPrice:" + price+"$";
             baseLabel.Font = ItalicFont;
             this.Controls.Add(baseLabel);
             baseLabel.BringToFront();

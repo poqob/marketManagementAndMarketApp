@@ -73,22 +73,20 @@ namespace OrdersPage
 
 
             //flow panel that keeps our widgets.
-
             panel.Location = new Point(195, 100);
             panel.Size = new Size(580, 300);
             panel.BackColor = BackColor;
             panel.FlowDirection = FlowDirection.LeftToRight;
-
             panel.AutoScroll = true;
-
             panel.WrapContents = true;
             Controls.Add(panel);
             panel.BringToFront();
 
-            MarketBar marketBar = new MarketBar(customerName, getBalance(folderAdress), ref folderAdress);
-
             //app bar
+            MarketBar marketBar = new MarketBar(customerName, getBalance(folderAdress), ref folderAdress);
             Controls.Add(marketBar);
+
+
         }
 
         //to get balance value from customer information file.
@@ -108,6 +106,14 @@ namespace OrdersPage
 
             return balance;
         }
+    
+        //TODO: shopping system
+        //list all products
+        //add them to shopping list with shoppingList staticly widgets by increasing or decreasing products.
+        //when user have pressed order button, clear shop list and make necessary moves.
+        //-from market folder to customer order folder, create one copy of file to manager side order folder-
+
+        
     }
 }
 
