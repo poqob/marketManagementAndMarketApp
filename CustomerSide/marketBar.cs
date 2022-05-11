@@ -13,13 +13,12 @@ namespace OrdersPage
     public class MarketBar : Label
     {
 
-        string customerName ;
-        string balance ;
+        string customerName;
+        string balance;
 
-        OrdersPage ordersPage = new OrdersPage();
+        string folderAdress;
 
-        AccountPage accountPage = new AccountPage();
-
+        RoundLabel marketLogo = new RoundLabel();
 
         RoundLabel label = new RoundLabel();
 
@@ -27,17 +26,17 @@ namespace OrdersPage
 
         Label balanceLabel = new Label();
 
-        RoundLabel label1 = new RoundLabel();
-
         RJButton ordersButton = new RJButton();
         RJButton acountButton = new RJButton();
 
-        public MarketBar(string customerName,string balance)
+        public MarketBar(string customerName, string balance, ref string folderAdress)
         {
-            this.customerName=customerName;
-            this.balance=balance;
+            this.customerName = customerName;
+            this.balance = balance;
+            this.folderAdress = folderAdress;
             baseCreator();
         }
+
 
         private void baseCreator()
         {
@@ -45,6 +44,9 @@ namespace OrdersPage
             this.Size = new Size(800, 70);
             this.Location = new Point(15, 5);
             this.BackColor = Color.FromArgb(255, 230, 204);
+
+
+
 
             //balanceLabel label
             label.Location = new Point(165, 10);
@@ -55,6 +57,17 @@ namespace OrdersPage
             label.borderWidth = 2;
             label.BringToFront();
             Controls.Add(label);
+
+            //marketLogo label
+            marketLogo.Location = new Point(10, 12);
+            marketLogo.Size = new Size(130, 52);
+            marketLogo.cornerRadius = 20;
+            marketLogo.borderColor = Color.Black;
+            marketLogo.borderWidth = 2;
+            marketLogo.Text = "Market";
+            marketLogo.Font = new Font("Arial", 12, FontStyle.Regular);
+            Controls.Add(marketLogo);
+            marketLogo.BringToFront();
 
             //balance label texts
             //name label
@@ -103,18 +116,21 @@ namespace OrdersPage
             acountButton.BorderSize = 1;
             acountButton.ForeColor = Color.Black;
             acountButton.BackColor = BackColor;
-            acountButton.Click += delegate (object sender, EventArgs e) { accountButtonFunction();};
+            acountButton.Click += delegate (object sender, EventArgs e) { accountButtonFunction(); };
             label.Controls.Add(acountButton);
             acountButton.BringToFront();
         }
 
         private void accountButtonFunction()
         {
+            AccountPage accountPage = new AccountPage();
             accountPage.ShowDialog();
         }
 
         private void ordersButtonFunction()
         {
+
+            OrdersPage ordersPage = new OrdersPage(ref this.customerName, ref this.balance,ref folderAdress);
             ordersPage.ShowDialog();
         }
     }

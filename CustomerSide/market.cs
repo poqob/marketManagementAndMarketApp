@@ -18,10 +18,10 @@ namespace OrdersPage
         string[] catagories = { "woman", "man", "chıld" };
         string customerName;
         string folderAdress;
-        public Market(ref string customerName,ref string folderAdress)
+        public Market(ref string customerName, ref string folderAdress)
         {
             this.customerName = customerName;
-            this.folderAdress=folderAdress;
+            this.folderAdress = folderAdress;
             baseCreator();
         }
 
@@ -32,11 +32,13 @@ namespace OrdersPage
             BackColor = Color.FromArgb(255, 230, 204);
             Font ItalicFont = new Font("Arial", 12, FontStyle.Italic);
 
+
             //marketBorder
             lable0.Size = new Size(610, 340);
             lable0.Location = new Point(180, 85);
             lable0.backColor = BackColor;
             lable0.borderColor = Color.Black;
+            lable0.Font = ItalicFont;
             lable0.borderWidth = 2;
             lable0.cornerRadius = 60;
             lable0.ForeColor = Color.Black;
@@ -64,7 +66,7 @@ namespace OrdersPage
             menuButton.BorderSize = 1;
             menuButton.Text = "order";
             menuButton.Font = ItalicFont;
-            menuButton.ForeColor=Color.Black;
+            menuButton.ForeColor = Color.Black;
             menuButton.Click += delegate (object sender, EventArgs e) { };
             Controls.Add(menuButton);
             menuButton.BringToFront();
@@ -83,17 +85,28 @@ namespace OrdersPage
             Controls.Add(panel);
             panel.BringToFront();
 
-            MarketBar marketBar=new MarketBar(customerName,getBalance(ref folderAdress));
+            MarketBar marketBar = new MarketBar(customerName, getBalance(folderAdress), ref folderAdress);
 
             //app bar
             Controls.Add(marketBar);
         }
 
         //to get balance value from customer information file.
-        private string getBalance(ref string folderAdress){
+        private string getBalance(string folderAdress)
+        {
 
-            
-            return "2000";
+            //folder adress.
+            folderAdress += "\\" + customerName + "$info\\data.txt";
+
+            string balance = File.ReadAllText(folderAdress);
+
+            //money range.
+            int index = balance.IndexOf("balance:") + 8;
+
+            //substringing.
+            balance = balance.Substring(index, balance.Length - index - 2);
+
+            return balance;
         }
     }
 }

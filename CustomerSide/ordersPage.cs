@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using CustomControls.RJControls;
 using RoundBorderLabel;
 using System.Text.RegularExpressions;
+using PQContentWidget;
 
 namespace OrdersPage
 {
@@ -13,10 +14,12 @@ namespace OrdersPage
 
     public class OrdersPage : Form
     {
+        //variables for appbar.
+        string customerName;
+        string balance;
+        string folderAdress;
 
-        string customerName = "HOOMAN";
-        string balance = "1000";
-
+        //form members.
         RoundLabel label2 = new RoundLabel();
 
         Label labelName = new Label();
@@ -29,15 +32,16 @@ namespace OrdersPage
         FlowLayoutPanel panel = new FlowLayoutPanel();
 
 
-        public OrdersPage()
+        public OrdersPage(ref string customerName, ref string balance, ref string folderAdres)
         {
+            this.customerName = customerName;
+            this.balance = balance;
+            this.folderAdress = folderAdres;
 
             this.Size = new Size(800, 500);
             this.CenterToParent();
             this.BackColor = Color.FromArgb(255, 230, 204);
             baseCreator();
-
-
 
         }
         private void baseCreator()
@@ -83,7 +87,7 @@ namespace OrdersPage
             //order label
             label1.Location = new Point(5, 10);
             label1.Size = new Size(140, 55);
-            label1.BackColor = Color.FromArgb(255, 230, 204); ;
+            label1.BackColor = Color.FromArgb(255, 230, 204);
             label1.borderColor = Color.Black;
             label1.borderWidth = 2;
             label1.cornerRadius = 20;
@@ -110,13 +114,103 @@ namespace OrdersPage
             panel.FlowDirection = FlowDirection.LeftToRight;
             lable0.Controls.Add(panel);
 
+            productLoader();
         }
 
         // load ordered products into panel from customer's order file.
-        private void productLoader(){}
+        private void productLoader()
+        {
+            //widgets will created here.
+            folderAdress = folderAdress + "\\" + customerName + "$order";
+
+            System.Collections.Generic.IEnumerable<string> files = Directory.EnumerateFiles(folderAdress, "*.txt", SearchOption.TopDirectoryOnly);
+            //panel clears itself because if isn't new generated widgets will have piled up.
+            panel.Controls.Clear();
+
+            foreach (string file in files)
+            {
+
+                orderFileReaderAndWidgetCreator(file, folderAdress.Length);
+            }
+        }
+        //folder adress lenght is neccesary because of substringing operation  in foreach loop.
+        private void orderFileReaderAndWidgetCreator(string fileAdress, int folderAdresLenghtWithoutCustomerName)
+        {
+
+            string[] catagories = { "WOMAN", "MAN", "CHILD" };
+            string[] catagoriesOfWear = { "t_shirt", "sweater", "pants" };
+
+            string fileContent;
+
+            string unitPrice;
+            string stockNum;
+            string photoPath;
+            string explanationPath;
+            string explanation;
+            string brandAndName = "";
+
+            int index0;
+            int index1;
+
+            //take all data in.
+            fileContent = File.ReadAllText(fileAdress);
+
+            //arranging brandAndName variable.
+            foreach (string catagory in catagories)
+            {
+                if (fileAdress.Contains(catagory))
+                {
+                    //to pretend MAN-WOMAN confuse, man word in woman word that cause a confuse.
+                    if (catagory == "MAN" && fileAdress.Contains("WOMAN"))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        index0 = fileAdress.IndexOf(catagory);
+                        //naming brandAndName, firstly brand
+                        brandAndName = fileAdress.Substring(folderAdresLenghtWithoutCustomerName + 1, index0 - folderAdresLenghtWithoutCustomerName - 1);
+                        foreach (string wear in catagoriesOfWear)
+                        {
+                            if (fileAdress.Contains(wear))
+                            {
+                                brandAndName += " " + wear;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //to get stock number from fileContent.
+            index0 = fileContent.IndexOf(":") + 1;
+            index1 = fileContent.IndexOf(",");
+            stockNum = fileContent.Substring(index0, index1 - index0);
+
+            //to get total price and convert it to a unit price.
+            index0 = fileContent.IndexOf("$", index1);
+            unitPrice = fileContent.Substring(index1 + 1, index0 - index1 - 1);//it is total price
+            //to obtain unit price via dividing totalPrice by stockNumber.
+            unitPrice = Convert.ToInt32(Convert.ToInt32(unitPrice) / Convert.ToInt32(stockNum)).ToString();
+
+            //to get photo number.
+            index0 = fileContent.IndexOf("&", 2);
+            index1 = fileContent.IndexOf("\n", index0);
+            photoPath = fileContent.Substring(index0 + 1, index1 - index0 - 1);
+            photoPath = photoPath.Insert(0, "ManagerSide\\");
+
+            //to get explanation path
+            index0 = fileContent.IndexOf("&", index1) + 1;
+            index1 = fileContent.IndexOf("\n", index0);
+            explanationPath = fileContent.Substring(index0, index1 - index0);
+            explanationPath = explanationPath.Insert(0, "ManagerSide\\");
+
+            //to get explanation.
+            explanation = File.ReadAllText(explanationPath);
 
 
+            StocksWidget marketContentWidget = new StocksWidget(ref photoPath, unitPrice, ref stockNum, ref brandAndName, ref explanation);
+            panel.Controls.Add(marketContentWidget);
 
-
+        }
     }
 }

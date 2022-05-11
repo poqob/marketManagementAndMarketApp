@@ -244,7 +244,7 @@ class SignUpForm : Form
 
 
         //start marketplacePage
-        Market market=new Market(ref name);
+        Market market=new Market(ref name,ref folderName);
         market.Size=this.Size;
         market.ShowDialog();
         this.Dispose();
