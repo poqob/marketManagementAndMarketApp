@@ -497,7 +497,7 @@ namespace Supliars
             string readFileOriginal = File.ReadAllText(productInformationDirector.Substring(0, productInformationDirector.Length - 3) + "txt");
 
 
-            //needed indexes for parsing stock number from original txt file
+            //needed indexes for parsing stock number from original txt file.
             int index = readFileOriginal.IndexOf(whichProduct) + 4;
 
             int index2 = readFileOriginal.IndexOf(",", index);

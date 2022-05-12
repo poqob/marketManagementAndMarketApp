@@ -12,9 +12,12 @@ namespace OrdersPage
     public class Market : Form
     {   //variables.
         RJButton menuButton = new RJButton();
-        FlowLayoutPanel panel = new FlowLayoutPanel();
+        FlowLayoutPanel panel = new FlowLayoutPanel();//panel for market palace
+        FlowLayoutPanel panelForOrderSection = new FlowLayoutPanel();//panel for order section, keeps list.
         RoundLabel lable0 = new RoundLabel();//ordered products label, i'm thinking make flow panel or panle there
         RoundLabel label1 = new RoundLabel();//market, balance and buttons label
+        MarketShoppingList list = new MarketShoppingList();//shows currently selected product informations in order section. datagridview.
+
 
         string marketPath = @"ManagerSide\datas\productsForSale";
 
@@ -61,6 +64,16 @@ namespace OrdersPage
             label1.Tag = "base";
             Controls.Add(label1);
 
+            panelForOrderSection.Location = new Point(35, 90);
+            panelForOrderSection.Size = new Size(115, 310);
+            panelForOrderSection.BackColor = Color.AliceBlue; 
+            panelForOrderSection.FlowDirection = FlowDirection.LeftToRight;
+            panelForOrderSection.AutoScroll = true;
+            panelForOrderSection.WrapContents = true;
+            Controls.Add(panelForOrderSection);
+            panelForOrderSection.BringToFront();
+
+            list.Size = new Size(130, 300);
 
             //order button
             menuButton.Size = new Size(100, 60);
@@ -199,8 +212,11 @@ namespace OrdersPage
                 //to get explanation.
                 explanation = File.ReadAllText(explanationPath);
 
+                //creating content widget with these above parameters.
                 MarketContentWidget marketContentWidget = new MarketContentWidget(ref photoPath, unitPrice, ref stockNum, ref brandAndName, ref explanation);
                 panel.Controls.Add(marketContentWidget);
+
+
             }
         }
     }

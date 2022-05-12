@@ -7,9 +7,12 @@ using RoundBorderLabel;
 
 namespace PQContentWidget
 {
-    static public class MarketShoppingList
+    public class MarketShoppingList:DataGridView
     {
         
     }
+    //scan productForSale folder for .temp files
+    //if there is any, read it and create a table that stores product brand and name, how much product is ordering, total price.
+    
 
 }

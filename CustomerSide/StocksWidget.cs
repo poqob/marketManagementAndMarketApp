@@ -7,14 +7,14 @@ using RoundBorderLabel;
 
 namespace PQContentWidget
 {
-    public class StocksWidget : Label
+    public class StocksWidget : Button
     {
         //variables
         RoundLabel baseLabel = new RoundLabel();
         Font ItalicFont = new Font("Arial", 6, FontStyle.Italic);
         PictureBox pictureBox1 = new PictureBox();
         private string fotoToDisplay;
-
+        private string explanation;
         private string price;
         private string stock;
         private string productBrandAndName;
@@ -26,6 +26,7 @@ namespace PQContentWidget
             this.productBrandAndName = brandAndName;
             this.price = unitPrice;
             this.stock = totalStock;
+            this.explanation = explanation;
             this.BackColor = Color.FromArgb(255, 230, 204);
             this.Size = new Size(120, 150);
             this.Padding = new Padding(60);
@@ -58,6 +59,11 @@ namespace PQContentWidget
             pictureBox1.Image = (Image)MyImage;
             this.Controls.Add(pictureBox1);
             pictureBox1.BringToFront();
+
+            //main widget click action.
+            this.Click += delegate (object sender, EventArgs e) { MessageBox.Show(explanation, productBrandAndName + " information", MessageBoxButtons.OK); };
+
         }
+
     }
 }
