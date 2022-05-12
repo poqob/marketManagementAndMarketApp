@@ -3,6 +3,7 @@ TODO
 MANAGER SIDE
 expenses and sales window will have been coded.
 orders will have been coded.
+
 orders
 functions
 -see given orders by customers.
@@ -12,7 +13,6 @@ functions
 
 CUSTOMER SIDE
 marketPlace will have been coded.
-orders will have been coded.
 stocks window will have been coded.
 
 marketplace
@@ -21,21 +21,8 @@ functions
 -made from an appBar,marketSide,ordered products side.
 -customer can change it's data via customerDataChanger.cs class
 
-orders
-functions
--see given orders in flowLayoutPanel as button widget
-
-
-
-
-
-
-
-
-
 
 
 notes:
 
-still there are some todos below of the contentWidget.cs
 

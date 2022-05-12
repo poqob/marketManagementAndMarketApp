@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using CustomControls.RJControls;
 using RoundBorderLabel;
 using System.Text.RegularExpressions;
+using PQContentWidget;
 
 namespace OrdersPage
 {
@@ -15,14 +16,18 @@ namespace OrdersPage
         RoundLabel lable0 = new RoundLabel();//ordered products label, i'm thinking make flow panel or panle there
         RoundLabel label1 = new RoundLabel();//market, balance and buttons label
 
-        string[] catagories = { "woman", "man", "chıld" };
+        string marketPath = @"ManagerSide\datas\productsForSale";
+
+        //folder adress is 
         string customerName;
+        //folder adress is keeps customer $order file.
         string folderAdress;
         public Market(ref string customerName, ref string folderAdress)
         {
             this.customerName = customerName;
             this.folderAdress = folderAdress;
             baseCreator();
+            productLoader();
         }
 
         private void baseCreator()
@@ -106,14 +111,98 @@ namespace OrdersPage
 
             return balance;
         }
-    
+
         //TODO: shopping system
         //list all products
         //add them to shopping list with shoppingList staticly widgets by increasing or decreasing products.
         //when user have pressed order button, clear shop list and make necessary moves.
         //-from market folder to customer order folder, create one copy of file to manager side order folder-
 
-        
+
+        private void productLoader()
+        {
+
+            string fileContent;
+            int index0;
+            int index1;
+            string stockNum;
+            string unitPrice;
+            string photoPath;
+            string explanationPath;
+            string explanation;
+            string brandAndName = "";
+            string[] catagories = { "WOMAN", "MAN", "CHILD" };
+            string[] catagoriesOfWear = { "t_shirt", "sweater", "pants" };
+
+            System.Collections.Generic.IEnumerable<string> files = Directory.EnumerateFiles(marketPath, "*.txt", SearchOption.TopDirectoryOnly);
+
+
+
+
+
+            //panel clears itself because if isn't new generated widgets will have piled up.
+            panel.Controls.Clear();
+            foreach (string file in files)
+            {
+
+                //arranging brandAndName variable.
+                foreach (string catagory in catagories)
+                {
+                    if (file.Contains(catagory))
+                    {
+                        //to pretend MAN-WOMAN confuse, man word in woman word that cause a confuse.
+                        if (catagory == "MAN" && file.Contains("WOMAN"))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            index0 = file.IndexOf(catagory);
+                            //naming brandAndName, firstly brand
+                            brandAndName = file.Substring(folderAdress.Length + 2, index0 - folderAdress.Length - 2);
+                            foreach (string wear in catagoriesOfWear)
+                            {
+                                if (file.Contains(wear))
+                                {
+                                    brandAndName += " " + wear;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                fileContent = File.ReadAllText(file);
+
+                //to get stock number from fileContent.
+                index0 = fileContent.IndexOf(":") + 1;
+                index1 = fileContent.IndexOf(",");
+                stockNum = fileContent.Substring(index0, index1 - index0);
+
+                //to get total price and convert it to a unit price.
+                index0 = fileContent.IndexOf("$", index1);
+                unitPrice = fileContent.Substring(index1 + 1, index0 - index1 - 1);//it is total price
+                                                                                   //to obtain unit price via dividing totalPrice by stockNumber.
+                unitPrice = Convert.ToInt32(Convert.ToInt32(unitPrice) / Convert.ToInt32(stockNum)).ToString();
+
+                //to get photo number.
+                index0 = fileContent.IndexOf("&", 2);
+                index1 = fileContent.IndexOf("\n", index0);
+                photoPath = fileContent.Substring(index0 + 1, index1 - index0 - 1);
+                photoPath = photoPath.Insert(0, "ManagerSide\\");
+
+                //to get explanation path
+                index0 = fileContent.IndexOf("&", index1) + 1;
+                index1 = fileContent.IndexOf("\n", index0);
+                explanationPath = fileContent.Substring(index0, index1 - index0);
+                explanationPath = explanationPath.Insert(0, "ManagerSide\\");
+
+                //to get explanation.
+                explanation = File.ReadAllText(explanationPath);
+
+                MarketContentWidget marketContentWidget = new MarketContentWidget(ref photoPath, unitPrice, ref stockNum, ref brandAndName, ref explanation);
+                panel.Controls.Add(marketContentWidget);
+            }
+        }
     }
 }
 

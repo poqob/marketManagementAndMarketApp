@@ -231,7 +231,7 @@ namespace PQContentWidget
                 }
                 else
                 {
-                    this.label1.Text = "Input can't be empty";
+                    this.label1.Text = "Input can't be empty.";
                 }
 
             }
@@ -240,8 +240,3 @@ namespace PQContentWidget
 
     }
 }
-
-//TODO: 
-//the input area only accepts number
-//if user press yes, move the file to productForSale folder.
-// think about is product can be seen while in productForSale or isn't.
