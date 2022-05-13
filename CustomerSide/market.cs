@@ -213,7 +213,7 @@ namespace OrdersPage
                 explanation = File.ReadAllText(explanationPath);
 
                 //creating content widget with these above parameters.
-                MarketContentWidget marketContentWidget = new MarketContentWidget(ref photoPath, unitPrice, ref stockNum, ref brandAndName, ref explanation);
+                MarketContentWidget marketContentWidget = new MarketContentWidget(ref photoPath, unitPrice, ref stockNum, ref brandAndName, ref explanation,file);
                 panel.Controls.Add(marketContentWidget);
 
 

@@ -1,0 +1,3 @@
+&sweater:3,60$
+&datas\suppliers\ERTAN\fotoData\MAN\1.png
+&datas\suppliers\ERTAN\fotoData\MAN\1.txt

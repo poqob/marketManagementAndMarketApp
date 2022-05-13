@@ -20,15 +20,17 @@ namespace PQContentWidget
         private string stock;
         private string productBrandAndName;
         private string explanation;
+        private string filePath;
 
-        public MarketContentWidget(ref string fotoPath, string unitPrice, ref string totalStock, ref string brandAndName, ref string explanation)
+        public MarketContentWidget(ref string fotoPath, string unitPrice, ref string totalStock, ref string brandAndName, ref string explanation, string filePath)
         {
             //attempting parameters to variables.
             this.fotoToDisplay = fotoPath;
             this.productBrandAndName = brandAndName;
             this.price = unitPrice;
             this.stock = totalStock;
-            this.explanation=explanation;
+            this.explanation = explanation;
+            this.filePath = filePath;
             this.BackColor = Color.FromArgb(255, 230, 204);
             this.Size = new Size(120, 170);
             this.Padding = new Padding(60);
@@ -72,20 +74,21 @@ namespace PQContentWidget
             numericUpDown.Maximum = Convert.ToInt32(stock);
             numericUpDown.ForeColor = Color.Black;
             numericUpDown.AllowDrop = false;
-            numericUpDown.Click += delegate (object sender, EventArgs e) { };
+            numericUpDown.Click += delegate (object sender, EventArgs e) { MarketFolderProcess.stockNumArranger(ref filePath, Convert.ToInt32(numericUpDown.Value)); };
             this.Controls.Add(numericUpDown);
             numericUpDown.BringToFront();
 
-            this.Click+=delegate(object sender,EventArgs e){clickAction();};
+            this.Click += delegate (object sender, EventArgs e) { clickAction(); };
 
         }
 
         //click action for widget button.
-        private void clickAction(){
-            MessageBox.Show(explanation,productBrandAndName+" information",MessageBoxButtons.OK);
+        private void clickAction()
+        {
+            MessageBox.Show(explanation, productBrandAndName + " information", MessageBoxButtons.OK);
         }
 
-        
+
 
 
     }

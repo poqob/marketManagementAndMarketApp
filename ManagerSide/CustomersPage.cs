@@ -52,7 +52,7 @@ namespace CustomerPage
             content += "\n-------------customer------------\n";
             content += File.ReadAllText(path);
             content += "\n--------------orders-------------\n";
-            content += File.ReadAllText(pathOfOrder);
+            //content += File.ReadAllText(pathOfOrder);
 
 
             //message box for informating or to delete user
