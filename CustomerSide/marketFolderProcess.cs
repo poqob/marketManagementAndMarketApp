@@ -10,8 +10,6 @@ namespace PQContentWidget
     static public class MarketFolderProcess
     {
 
-        static string originalFileContent;
-
         static string currentFilePath;
         static string currentFileContent;
 
@@ -83,22 +81,97 @@ namespace PQContentWidget
 
         }
 
-        static public void orderControll()
+        static public void orderControll(ref string folderAdress, ref string customerName)
         {
-            //find all .tmp files and make an array with them. in orders folder
-            System.Collections.Generic.IEnumerable<string> files = Directory.EnumerateFiles(@"ManagerSide\datas\productsForSale\", "*.tmp", SearchOption.AllDirectories);
+            //find all .tmp files and make an array with them that is in productsForSale folder, in order to move .tmp to customer$order folder.
+            System.Collections.Generic.IEnumerable<string> filesTmp = Directory.EnumerateFiles(@"ManagerSide\datas\productsForSale\", "*.tmp", SearchOption.AllDirectories);
+            //find all .temp files and make an array with them that is in productsForSale folder,  in order to make .temps new .txts
+            System.Collections.Generic.IEnumerable<string> filesTemp = Directory.EnumerateFiles(@"ManagerSide\datas\productsForSale\", "*.temp", SearchOption.AllDirectories);
 
-            foreach (string file in files)
+            //customer$order
+            string customerOrderFolder = folderAdress + "\\" + customerName + "$order";
+
+            //files gooese
+            foreach (string file in filesTmp)
             {
+                //send .tmp file to customer$order
+                if (!File.Exists(customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt"))
+                {
+                    File.Move(file, customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt");
+                }
+                else
+                {
+                    //to get stock nums.
+                    string oldStock;
+                    string newStock;
 
-                
+                    //to get prices.
+                    string newPrice;
+                    string oldPrice;
+
+                    //temporary string data that keeps file content.
+                    string temporaryContentFile;
+
+                    //readşng indexes.
+                    int index0;
+                    int index1;
+
+                    //firstly i attempt new file because we read new file which is .tmp we will add it to .txt
+                    temporaryContentFile = File.ReadAllText(file);
+
+                    //getting stock number from new file.
+                    index0 = temporaryContentFile.IndexOf(":") + 1;
+                    index1 = temporaryContentFile.IndexOf(",");
+                    //attemting new stock number to newStock.
+                    newStock = temporaryContentFile.Substring(index0, index1 - index0);
+
+                    //attempting newTotalPrice to newPrice
+                    index0 = temporaryContentFile.IndexOf("$");
+                    newPrice = temporaryContentFile.Substring(index1 + 1, index0 - index1 - 1);
+
+
+                    //secondly i attempt old file because we will add new one's products and stock to old. because old(.txt) have already located in customer$order folder.
+                    temporaryContentFile = File.ReadAllText(customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt");
+
+                    //getting stock number from new file.
+                    index0 = temporaryContentFile.IndexOf(":") + 1;
+                    index1 = temporaryContentFile.IndexOf(",");
+                    //attemting old stock number to newStock.
+                    oldStock = temporaryContentFile.Substring(index0, index1 - index0);
+
+                    //attempting oldTotalPrice to newPrice
+                    index0 = temporaryContentFile.IndexOf("$");
+                    oldPrice = temporaryContentFile.Substring(index1 + 1, index0 - index1 - 1);
+
+                    //changing stock number.
+                    temporaryContentFile = temporaryContentFile.Replace(oldStock, (Convert.ToInt32(oldStock) + Convert.ToInt32(newStock).ToString()));
+
+                    //changing total price.
+                    temporaryContentFile = temporaryContentFile.Replace(oldPrice, (Convert.ToInt32(oldPrice) + Convert.ToInt32(newPrice).ToString()));
+
+                    //applying changes to the .txt file.
+                    File.WriteAllText(customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt", temporaryContentFile);
 
 
 
 
 
 
+
+                }
             }
+            //deleting .tmp and .temp files 
+            //not: issume i didn't use any .temp file.
+            foreach (string file in filesTmp)
+            {
+                File.Delete(file);
+            }
+            foreach (string file in filesTemp)
+            {
+                File.Delete(file);
+            }
+
+
 
         }
 
@@ -121,20 +194,6 @@ namespace PQContentWidget
     }
 
 
-
-
-    //take file path, 
-    //crate copy of that file with .tmp extension just in case order instruction keep stock num without ordered products.
-    //create copy of that file with .temp extension and store how many product is ordering.
-    //work on .tmp file
-
-    //process: numericUpDown
-    //arranging stock num for .temp and .tmp
-    //if order have given, delete current .txt file and make .tmp->.txt;
-    //send .temp file to customer$order file make extension .txt;
-    //controlls if there was same file in customer$order:
-    //if there was, merge two files and add one of them stock number to another one. same for totalPrice.
-    //if there wasn't, do only moving. 
 
 
     /*
