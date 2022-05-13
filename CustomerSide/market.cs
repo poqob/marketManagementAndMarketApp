@@ -85,7 +85,7 @@ namespace OrdersPage
             menuButton.Text = "order";
             menuButton.Font = ItalicFont;
             menuButton.ForeColor = Color.Black;
-            menuButton.Click += delegate (object sender, EventArgs e) { MarketFolderProcess.orderControll(ref folderAdress, ref customerName); };
+            menuButton.Click += delegate (object sender, EventArgs e) { MarketFolderProcess.orderControll(ref folderAdress, ref customerName); Utilities.ResetAllControls(this); };
             Controls.Add(menuButton);
             menuButton.BringToFront();
 
@@ -147,8 +147,7 @@ namespace OrdersPage
             string stockNum;
             string unitPrice;
             string photoPath;
-            string explanationPath;
-            string explanation;
+
             string brandAndName = "";
             string[] catagories = { "WOMAN", "MAN", "CHILD" };
             string[] catagoriesOfWear = { "t_shirt", "sweater", "pants" };
@@ -209,6 +208,8 @@ namespace OrdersPage
                 photoPath = fileContent.Substring(index0 + 1, index1 - index0 - 1);
                 photoPath = photoPath.Insert(0, "ManagerSide\\");
 
+                string explanationPath;
+                string explanation;
                 //to get explanation path
                 index0 = fileContent.IndexOf("&", index1) + 1;
                 index1 = fileContent.IndexOf("\n", index0);

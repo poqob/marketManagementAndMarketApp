@@ -53,7 +53,7 @@ namespace PQContentWidget
 
 
             //if file was already exist work on it's stock number.
-            else if (File.Exists(filePath) && File.Exists(filePath.Substring(0, filePath.Length - 3) + "tmp"))
+            else if (File.Exists(filePath) && File.Exists(filePath.Substring(0, filePath.Length - 3) + "temp"))
             {
                 //to ensure.
                 currentFilePath = filePath.Substring(0, filePath.Length - 3) + "tmp";
@@ -91,7 +91,22 @@ namespace PQContentWidget
             //customer$order
             string customerOrderFolder = folderAdress + "\\" + customerName + "$order";
 
-            //files gooese
+            //to get stock nums.
+            string oldStock;
+            string newStock;
+
+            //to get prices.
+            string newPrice;
+            string oldPrice;
+
+            //temporary string data that keeps file content.
+            string temporaryContentFile;
+
+            //indexes.
+            int index0;
+            int index1;
+
+
             foreach (string file in filesTmp)
             {
                 //send .tmp file to customer$order
@@ -101,20 +116,6 @@ namespace PQContentWidget
                 }
                 else
                 {
-                    //to get stock nums.
-                    string oldStock;
-                    string newStock;
-
-                    //to get prices.
-                    string newPrice;
-                    string oldPrice;
-
-                    //temporary string data that keeps file content.
-                    string temporaryContentFile;
-
-                    //readşng indexes.
-                    int index0;
-                    int index1;
 
                     //firstly i attempt new file because we read new file which is .tmp we will add it to .txt
                     temporaryContentFile = File.ReadAllText(file);
@@ -144,24 +145,54 @@ namespace PQContentWidget
                     oldPrice = temporaryContentFile.Substring(index1 + 1, index0 - index1 - 1);
 
                     //changing stock number.
-                    temporaryContentFile = temporaryContentFile.Replace(oldStock, (Convert.ToInt32(oldStock) + Convert.ToInt32(newStock).ToString()));
+                    temporaryContentFile = temporaryContentFile.Replace(oldStock, (Convert.ToInt32(oldStock) + Convert.ToInt32(newStock)).ToString());
 
                     //changing total price.
-                    temporaryContentFile = temporaryContentFile.Replace(oldPrice, (Convert.ToInt32(oldPrice) + Convert.ToInt32(newPrice).ToString()));
+                    temporaryContentFile = temporaryContentFile.Replace(oldPrice, (Convert.ToInt32(oldPrice) + Convert.ToInt32(newPrice)).ToString());
 
-                    //applying changes to the .txt file.
+                    //deleting managerSide relative paths from photopath line and explanation path line.
+                    index0 = temporaryContentFile.IndexOf("Manager");
+                    temporaryContentFile = temporaryContentFile.Remove(index0, 12);
+                    index0 = temporaryContentFile.IndexOf("ManagerSide\\");
+                    temporaryContentFile = temporaryContentFile.Remove(index0, 12);
+
+                    //applying changes to the .txt file that is ordered product.
                     File.WriteAllText(customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt", temporaryContentFile);
-
-
-
-
-
-
 
                 }
             }
+
+            foreach (string file in filesTemp)
+            {
+
+                //read .temp file.
+                temporaryContentFile = File.ReadAllText(file);
+
+                //getting stock number.
+                index0 = temporaryContentFile.IndexOf(":") + 1;
+                index1 = temporaryContentFile.IndexOf(",");
+                //attemting new stock number to newStock.
+                newStock = temporaryContentFile.Substring(index0, index1 - index0);
+
+                //deleting managerSide relative paths from photopath line and explanation path line.
+                index0 = temporaryContentFile.IndexOf("Manager");
+                temporaryContentFile = temporaryContentFile.Remove(index0, 12);
+                index0 = temporaryContentFile.IndexOf("ManagerSide\\");
+                temporaryContentFile = temporaryContentFile.Remove(index0, 12);
+
+                //if .temp file's stock number is equal to 0, we dont need to make it .txt and store in market folder which is productsForSale
+                if (newStock != "0")
+                {
+                    File.Delete(file.Substring(0, file.Length - 4) + "txt");
+                    File.Copy(file, file.Substring(0, file.Length - 4) + "txt");
+                }
+                else
+                {
+                    File.Delete(file.Substring(0, file.Length - 4) + "txt");
+                }
+            }
             //deleting .tmp and .temp files 
-            //not: issume i didn't use any .temp file.
+
             foreach (string file in filesTmp)
             {
                 File.Delete(file);
@@ -190,6 +221,35 @@ namespace PQContentWidget
                 File.Delete(file);
             }
 
+        }
+    }
+
+    //reset NumericUpDown form elements
+    public static class Utilities
+    {
+        public static void ResetAllControls(Control form)
+        {
+            foreach (Control control in form.Controls)
+            {
+                //reset numericUpDown buttons
+                if (control is NumericUpDown)
+                {
+                    NumericUpDown upDown = (NumericUpDown)control;
+                    upDown.Value = 0;
+                }
+
+                if (control is MarketContentWidget)
+                {
+                    MarketContentWidget widget = (MarketContentWidget)control;
+                    widget.Refresh();
+                }
+
+                if (control is MarketShoppingList)
+                {
+                    MarketShoppingList widget = (MarketShoppingList)control;
+                    widget.Refresh();
+                }
+            }
         }
     }
 

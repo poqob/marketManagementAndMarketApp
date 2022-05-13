@@ -1,3 +1,0 @@
-&t_shirt:9,180$
-&datas\suppliers\ERTAN\fotoData\MAN\2.png
-&datas\suppliers\ERTAN\fotoData\MAN\2.txt
