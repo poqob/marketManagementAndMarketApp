@@ -64,9 +64,9 @@ namespace OrdersPage
             label1.Tag = "base";
             Controls.Add(label1);
 
-            panelForOrderSection.Location = new Point(35, 90);
-            panelForOrderSection.Size = new Size(115, 310);
-            panelForOrderSection.BackColor = Color.AliceBlue; 
+            panelForOrderSection.Location = new Point(32, 95);
+            panelForOrderSection.Size = new Size(115, 315);
+            panelForOrderSection.BackColor = Color.AliceBlue;
             panelForOrderSection.FlowDirection = FlowDirection.LeftToRight;
             panelForOrderSection.AutoScroll = true;
             panelForOrderSection.WrapContents = true;
@@ -85,7 +85,7 @@ namespace OrdersPage
             menuButton.Text = "order";
             menuButton.Font = ItalicFont;
             menuButton.ForeColor = Color.Black;
-            menuButton.Click += delegate (object sender, EventArgs e) { };
+            menuButton.Click += delegate (object sender, EventArgs e) { MarketFolderProcess.orderControll(); };
             Controls.Add(menuButton);
             menuButton.BringToFront();
 
@@ -103,6 +103,12 @@ namespace OrdersPage
             //app bar
             MarketBar marketBar = new MarketBar(customerName, getBalance(folderAdress), ref folderAdress);
             Controls.Add(marketBar);
+
+            // form ~destructor
+            this.FormClosed += delegate (object sender, FormClosedEventArgs e)
+           {
+               MarketFolderProcess.destructor();
+           };
 
 
         }
@@ -213,7 +219,7 @@ namespace OrdersPage
                 explanation = File.ReadAllText(explanationPath);
 
                 //creating content widget with these above parameters.
-                MarketContentWidget marketContentWidget = new MarketContentWidget(ref photoPath, unitPrice, ref stockNum, ref brandAndName, ref explanation,file);
+                MarketContentWidget marketContentWidget = new MarketContentWidget(ref photoPath, unitPrice, ref stockNum, ref brandAndName, ref explanation, file, ref explanationPath);
                 panel.Controls.Add(marketContentWidget);
 
 
