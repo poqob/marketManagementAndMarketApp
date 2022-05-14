@@ -18,12 +18,21 @@ namespace PQContentWidget
 
 
         //creates new .tmp and .temp files.
-        static public void stockNumArrangerAndFileOperations(ref string filePath, ref string photoPath, ref string explanation, ref string stock, ref string price, ref string brandAndName, int howManyProductAddedToChart, ref string explanationPath)
+        static public void stockNumArrangerAndFileOperations(ref string filePath, string photoPath, ref string explanation, ref string stock, ref string price, ref string brandAndName, int howManyProductAddedToChart, string explanationPath)
         {
 
             //adjusting-seperating- brand and name
             string[] brandName = new string[2] { brandAndName.Substring(0, brandAndName.IndexOf(" ")).Trim(), brandAndName.Substring(brandAndName.IndexOf(" ")).Trim() };
             //MessageBox.Show(brandName[0] + " " + brandName[1]); 0 is for brand, 1 is for product name like sweater.
+
+            int index0;
+
+            //adjusting directories.
+            //deleting managerSide relative paths from photopath and explanation path line.
+            index0 = photoPath.IndexOf("Manager");
+            photoPath = photoPath.Remove(index0, 12);
+            index0 = explanationPath.IndexOf("Manager");
+            explanationPath = explanationPath.Remove(index0, 12);
 
             //creating .tmp file to work on it.
             if (File.Exists(filePath) && !File.Exists(filePath.Substring(0, filePath.Length - 3) + "tmp"))
@@ -112,6 +121,7 @@ namespace PQContentWidget
                 //send .tmp file to customer$order
                 if (!File.Exists(customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt"))
                 {
+
                     File.Move(file, customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt");
                 }
                 else
@@ -150,11 +160,7 @@ namespace PQContentWidget
                     //changing total price.
                     temporaryContentFile = temporaryContentFile.Replace(oldPrice, (Convert.ToInt32(oldPrice) + Convert.ToInt32(newPrice)).ToString());
 
-                    //deleting managerSide relative paths from photopath line and explanation path line.
-                    index0 = temporaryContentFile.IndexOf("Manager");
-                    temporaryContentFile = temporaryContentFile.Remove(index0, 12);
-                    index0 = temporaryContentFile.IndexOf("ManagerSide\\");
-                    temporaryContentFile = temporaryContentFile.Remove(index0, 12);
+
 
                     //applying changes to the .txt file that is ordered product.
                     File.WriteAllText(customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt", temporaryContentFile);
@@ -173,12 +179,6 @@ namespace PQContentWidget
                 index1 = temporaryContentFile.IndexOf(",");
                 //attemting new stock number to newStock.
                 newStock = temporaryContentFile.Substring(index0, index1 - index0);
-
-                //deleting managerSide relative paths from photopath line and explanation path line.
-                index0 = temporaryContentFile.IndexOf("Manager");
-                temporaryContentFile = temporaryContentFile.Remove(index0, 12);
-                index0 = temporaryContentFile.IndexOf("ManagerSide\\");
-                temporaryContentFile = temporaryContentFile.Remove(index0, 12);
 
                 //if .temp file's stock number is equal to 0, we dont need to make it .txt and store in market folder which is productsForSale
                 if (newStock != "0")
@@ -206,6 +206,7 @@ namespace PQContentWidget
 
         }
 
+        //destructor of customerMarket page.
         static public void destructor()
         {
             //find all .tmp files and make an array with them. in orders folder

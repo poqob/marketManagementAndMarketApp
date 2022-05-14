@@ -76,7 +76,7 @@ namespace PQContentWidget
             numericUpDown.Maximum = Convert.ToInt32(stock);
             numericUpDown.ForeColor = Color.Black;
             numericUpDown.AllowDrop = false;
-            numericUpDown.Click += delegate (object sender, EventArgs e) { MarketFolderProcess.stockNumArrangerAndFileOperations(ref filePath, ref fotoToDisplay, ref explanation, ref stock, ref price, ref productBrandAndName, Convert.ToInt32(numericUpDown.Value), ref explanationPath); };
+            numericUpDown.Click += delegate (object sender, EventArgs e) { MarketFolderProcess.stockNumArrangerAndFileOperations(ref filePath, fotoToDisplay, ref explanation, ref stock, ref price, ref productBrandAndName, Convert.ToInt32(numericUpDown.Value), explanationPath); };
             this.Controls.Add(numericUpDown);
             numericUpDown.BringToFront();
 
