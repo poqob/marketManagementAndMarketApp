@@ -1,3 +1,0 @@
-&t_shirt:2,40$
-&datas\suppliers\HOOMAN\fotoData\MAN\2.png
-&datas\suppliers\HOOMAN\fotoData\MAN\2.txt

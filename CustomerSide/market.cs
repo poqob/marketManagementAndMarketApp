@@ -85,7 +85,7 @@ namespace OrdersPage
             menuButton.Text = "order";
             menuButton.Font = ItalicFont;
             menuButton.ForeColor = Color.Black;
-            menuButton.Click += delegate (object sender, EventArgs e) { MarketFolderProcess.orderControll(ref folderAdress, ref customerName); Utilities.ResetAllControls(this); };
+            menuButton.Click += delegate (object sender, EventArgs e) { MarketFolderProcess.orderControll(ref folderAdress, ref customerName, this); };
             Controls.Add(menuButton);
             menuButton.BringToFront();
 

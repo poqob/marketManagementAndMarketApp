@@ -16,6 +16,7 @@ namespace PQContentWidget
         static string tempFilePath;
         static string tempFileContent;
 
+        static string remainBalance;
 
         //creates new .tmp and .temp files.
         static public void stockNumArrangerAndFileOperations(ref string filePath, string photoPath, ref string explanation, ref string stock, ref string price, ref string brandAndName, int howManyProductAddedToChart, string explanationPath)
@@ -90,7 +91,7 @@ namespace PQContentWidget
 
         }
 
-        static public void orderControll(ref string folderAdress, ref string customerName)
+        static public void orderControll(ref string folderAdress, ref string customerName, Control form)
         {
             //find all .tmp files and make an array with them that is in productsForSale folder, in order to move .tmp to customer$order folder.
             System.Collections.Generic.IEnumerable<string> filesTmp = Directory.EnumerateFiles(@"ManagerSide\datas\productsForSale\", "*.tmp", SearchOption.AllDirectories);
@@ -99,6 +100,8 @@ namespace PQContentWidget
 
             //customer$order
             string customerOrderFolder = folderAdress + "\\" + customerName + "$order";
+            //customer info
+            string customerInfoFolder = folderAdress + "\\" + customerName + "$info";
 
             //to get stock nums.
             string oldStock;
@@ -122,7 +125,14 @@ namespace PQContentWidget
                 if (!File.Exists(customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt"))
                 {
 
+                    //firstly i attempt new file because we read new file which is .tmp we will add it to .txt
+                    temporaryContentFile = File.ReadAllText(file);
+                    //attempting newTotalPrice to newPrice
+                    index1 = temporaryContentFile.IndexOf(",");
+                    index0 = temporaryContentFile.IndexOf("$");
+                    newPrice = temporaryContentFile.Substring(index1 + 1, index0 - index1 - 1);
                     File.Move(file, customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt");
+                    moneyManagement(ref newPrice, ref customerInfoFolder);
                 }
                 else
                 {
@@ -139,6 +149,7 @@ namespace PQContentWidget
                     //attempting newTotalPrice to newPrice
                     index0 = temporaryContentFile.IndexOf("$");
                     newPrice = temporaryContentFile.Substring(index1 + 1, index0 - index1 - 1);
+                    moneyManagement(ref newPrice, ref customerInfoFolder);
 
 
                     //secondly i attempt old file because we will add new one's products and stock to old. because old(.txt) have already located in customer$order folder.
@@ -202,7 +213,10 @@ namespace PQContentWidget
                 File.Delete(file);
             }
 
+            MessageBox.Show("Order has taken.\nRemain Balance is: " + remainBalance, "Order receipt!");
 
+            //doesnt work
+            Utilities.ResetAllControls(form);
 
         }
 
@@ -219,9 +233,41 @@ namespace PQContentWidget
     -if order has given, edit customer$info data.txt's balance by last balance.
     -delete customer$info .tmp file.
     */
-        static public void moneyManagement()
+        static public void moneyManagement(ref string price, ref string customerInfoFolder)
         {
-            
+            //to get prices.
+            string oldPrice = "1000";
+            //indexes.
+            int index0;
+
+            string originalFile = customerInfoFolder + "\\data.txt";
+            string tempFile = customerInfoFolder + "\\data.tmp";
+
+
+            if (!File.Exists(tempFile))
+            {
+                File.Copy(originalFile, tempFile);
+            }
+
+            string temporaryContentFile = File.ReadAllText(tempFile);
+
+            //attempting newTotalPrice to newPrice
+
+            if (temporaryContentFile.Contains("&balance:"))
+            {
+                index0 = temporaryContentFile.IndexOf("&balance:");
+                oldPrice = temporaryContentFile.Substring(index0 + 9);
+                remainBalance = (Convert.ToInt32(oldPrice) - Convert.ToInt32(price)).ToString();
+                temporaryContentFile = temporaryContentFile.Replace(oldPrice, remainBalance);
+                File.WriteAllText(tempFile, temporaryContentFile);
+            }
+
+            if (File.Exists(tempFile))
+            {
+                File.Delete(originalFile);
+                File.Copy(tempFile, originalFile);
+                File.Delete(tempFile);
+            }
         }
 
 

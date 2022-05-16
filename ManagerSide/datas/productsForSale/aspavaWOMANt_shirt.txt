@@ -1,3 +1,0 @@
-&t_shirt:2,20$
-&datas\suppliers\ASPAVA\fotoData\WOMAN\2.png
-&datas\suppliers\ASPAVA\fotoData\WOMAN\2.txt
