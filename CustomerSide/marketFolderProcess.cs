@@ -191,8 +191,8 @@ namespace PQContentWidget
                     File.Delete(file.Substring(0, file.Length - 4) + "txt");
                 }
             }
-            //deleting .tmp and .temp files 
 
+            //deleting .tmp and .temp files 
             foreach (string file in filesTmp)
             {
                 File.Delete(file);
@@ -205,6 +205,27 @@ namespace PQContentWidget
 
 
         }
+
+
+
+        /*
+    money management,
+
+    while shopping calculate remain balance dynamicly.
+    -create a copy of customer$info data.txt as .tmp
+    -fetch money from .txt file.
+    -get productForSale\*.tmp's total price and sum with each other.
+    -return string that is equal to balance-tmp.totalCost
+    -if order has given, edit customer$info data.txt's balance by last balance.
+    -delete customer$info .tmp file.
+    */
+        static public void moneyManagement()
+        {
+            
+        }
+
+
+
 
         //destructor of customerMarket page.
         static public void destructor()
@@ -258,12 +279,15 @@ namespace PQContentWidget
 
 
     /*
-        the algorithm,
+        the basic thing behind these,
+
     read original file stock and keep it,
     create a copy of order file but it's stock and price is dynamicly changing.
     if order have given:
      edit .txt files stock and total price-minusing with howManyProductAddedToChart- .Replace()
      move copy file to customer's $order file.
     */
+
+
 
 }
