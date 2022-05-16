@@ -654,7 +654,6 @@ namespace Supliars
                 //copy new .txt from .tmp
                 File.Copy(file, file.Substring(0, file.Length - 3) + "txt");
 
-                string spend = "0";
                 //contolls if file is already exists in allStock, according to this step the code will move .txt or the code will reflesh existed file values.
                 if (!File.Exists(@"datas\allStock\" + catagory + @"\" + file.Substring(13, file.Length - 16) + "txt"))
                 {

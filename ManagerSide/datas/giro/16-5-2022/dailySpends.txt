@@ -1,6 +1,6 @@
 bills:-500$
 employeeWage:-1500$
 taxes:-650$
-sells:0$
+sells:678$
 orders:-62$
-giro:0$
+giro:-2712$

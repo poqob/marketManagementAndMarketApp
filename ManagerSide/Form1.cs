@@ -46,10 +46,10 @@ namespace ndpProje
             //first button location
             Point point = new Point(85, 150);
             //buttonses texts
-            String[] buttonNames = { "suppliers", "customers", "stocks", "expenses and sales", "orders", "market" };
+            String[] buttonNames = { "suppliers", "customers", "stocks", "expenses and sales" };
 
             //creating buttons
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 4; i++)
             {
                 RJButton button = new RJButton();
 
@@ -82,31 +82,19 @@ namespace ndpProje
                     case 3:
                         button.Click += new System.EventHandler(this.expensesAndSales);
                         break;
-                    case 4:
-                        button.Click += new System.EventHandler(this.orders);
-                        break;
-                    case 5:
-                        button.Click += new System.EventHandler(this.market);
-                        break;
+
                 }
 
                 Controls.Add(button);
             }
 
         }
-        private void market(object sender, EventArgs e)
-        {
-            MessageBox.Show("the market in stock and market way, the market selection will deleted", "debug note");
-        }
 
-        private void orders(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+
 
         private void expensesAndSales(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            ExpensesAndSalesUI.messager();
         }
 
         private void stocks(object sender, EventArgs e)
