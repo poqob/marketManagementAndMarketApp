@@ -218,6 +218,35 @@ namespace PQContentWidget
             //doesnt work
             Utilities.ResetAllControls(form);
 
+            foreach (Control control in form.Controls)
+            {
+                //reset numericUpDown buttons
+                if (control is NumericUpDown)
+                {
+                    NumericUpDown upDown = (NumericUpDown)control;
+                    upDown.Value = 0;
+                }
+
+                if (control is MarketContentWidget)
+                {
+                    MarketContentWidget widget = (MarketContentWidget)control;
+                    widget.Refresh();
+                }
+
+                if (control is MarketShoppingList)
+                {
+                    MarketShoppingList widget = (MarketShoppingList)control;
+                    widget.Refresh();
+                }
+                if (control is Label)
+                {
+                    Label label = (Label)control;
+                    label.Text = remainBalance;
+                }
+            }
+
+            //we have problem with refleshing form.
+
         }
 
 

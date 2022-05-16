@@ -33,10 +33,31 @@ namespace OrdersPage
         {
             this.customerName = customerName;
             this.balance = balance;
+            fetchMoney(ref customerName);
             this.folderAdress = folderAdress;
             baseCreator();
         }
 
+        public void fetchMoney(ref string customerName)
+        {
+            //indexes.
+            int index0;
+            //ManagerSide\datas\customers\gala\gala$info\data.txt //exmp adress
+
+            string originalFile = @"ManagerSide\datas\customers\" + customerName + "\\" + customerName + "$info\\" + "data.txt";
+
+            string temporaryContentFile = File.ReadAllText(originalFile);
+
+
+            if (temporaryContentFile.Contains("&balance:"))
+            {
+                index0 = temporaryContentFile.IndexOf("&balance:");
+                this.balance = temporaryContentFile.Substring(index0 + 9);
+            }
+
+
+
+        }
 
         private void baseCreator()
         {
@@ -130,7 +151,7 @@ namespace OrdersPage
         private void ordersButtonFunction()
         {
 
-            OrdersPage ordersPage = new OrdersPage(ref this.customerName, ref this.balance,ref folderAdress);
+            OrdersPage ordersPage = new OrdersPage(ref this.customerName, ref this.balance, ref folderAdress);
             ordersPage.ShowDialog();
         }
     }

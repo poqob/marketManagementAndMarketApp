@@ -1,3 +1,3 @@
-&t_shirt:17,102$
+&t_shirt:16,96$
 &datas\suppliers\HOOMAN\fotoData\WOMAN\2.png
 &datas\suppliers\HOOMAN\fotoData\WOMAN\2.txt
