@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using CustomControls.RJControls;
 using RoundBorderLabel;
 using System.Text.RegularExpressions;
+using ManagerSide;
 
 namespace Supliars
 {
@@ -602,6 +603,7 @@ namespace Supliars
 
         //if user allowed the order, .tmp file will have been .txt file.
         //so fake orders have been true.
+
         static void orderFolderControllerAllowing()
         {
             //find all .tmp files and make an array with them. in orders folder
@@ -652,7 +654,7 @@ namespace Supliars
                 //copy new .txt from .tmp
                 File.Copy(file, file.Substring(0, file.Length - 3) + "txt");
 
-
+                string spend = "0";
                 //contolls if file is already exists in allStock, according to this step the code will move .txt or the code will reflesh existed file values.
                 if (!File.Exists(@"datas\allStock\" + catagory + @"\" + file.Substring(13, file.Length - 16) + "txt"))
                 {
@@ -697,8 +699,7 @@ namespace Supliars
 
                     //deleting .tmp
                     File.Delete(file);
-
-
+                    ExpensesAndSales.spends((oldCost + newCost).ToString());
                 }
 
                 //making a provide.

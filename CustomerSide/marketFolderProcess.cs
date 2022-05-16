@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using CustomControls.RJControls;
 using RoundBorderLabel;
+using ManagerSide;
 
 namespace PQContentWidget
 {
@@ -131,6 +132,13 @@ namespace PQContentWidget
                     index1 = temporaryContentFile.IndexOf(",");
                     index0 = temporaryContentFile.IndexOf("$");
                     newPrice = temporaryContentFile.Substring(index1 + 1, index0 - index1 - 1);
+
+
+                    //write income 
+                    ExpensesAndSales.income(newPrice);
+
+
+
                     File.Move(file, customerOrderFolder + "\\" + file.Substring(34, file.Length - 37) + "txt");
                     moneyManagement(ref newPrice, ref customerInfoFolder);
                 }

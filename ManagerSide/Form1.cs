@@ -12,6 +12,7 @@ using RoundBorderLabel;
 using CustomerPage;
 using Supliars;
 using Stock;
+using ManagerSide;
 
 namespace ndpProje
 {
@@ -19,8 +20,12 @@ namespace ndpProje
     {
         public Form1()
         {
+
             InitializeComponent();
             mainFormButtonCreator();
+            //create today folder. in giro
+            ExpensesAndSales.folderControl();
+            ExpensesAndSales.giro();
             //backround color.
             BackColor = Color.FromArgb(38, 38, 38);
 
@@ -91,7 +96,7 @@ namespace ndpProje
         }
         private void market(object sender, EventArgs e)
         {
-            MessageBox.Show("market");
+            MessageBox.Show("the market in stock and market way, the market selection will deleted", "debug note");
         }
 
         private void orders(object sender, EventArgs e)
@@ -106,8 +111,8 @@ namespace ndpProje
 
         private void stocks(object sender, EventArgs e)
         {
-            Stocks stocksPage=new Stocks();
-            stocksPage.Size=new Size(800,500);
+            Stocks stocksPage = new Stocks();
+            stocksPage.Size = new Size(800, 500);
             this.Hide();
             stocksPage.ShowDialog();
             this.Show();
@@ -115,18 +120,18 @@ namespace ndpProje
 
         private void customers(object sender, EventArgs e)
         {
-            CustomersPage customerPage=new CustomersPage();
-            customerPage.Size=new Size(800, 500);
+            CustomersPage customerPage = new CustomersPage();
+            customerPage.Size = new Size(800, 500);
             this.Hide();
             customerPage.ShowDialog();
             this.Show();
-            
+
         }
 
         private void supplier(object sender, EventArgs e)
         {
-            SupliarsMarketPlace supliarsPage=new SupliarsMarketPlace();
-            supliarsPage.Size=new Size(800, 500);
+            SupliarsMarketPlace supliarsPage = new SupliarsMarketPlace();
+            supliarsPage.Size = new Size(800, 500);
             this.Hide();
             supliarsPage.ShowDialog();
             this.Show();

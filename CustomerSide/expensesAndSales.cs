@@ -20,7 +20,7 @@ namespace ManagerSide
             string today = DateTime.Today.Day.ToString();
             today += "-" + DateTime.Today.Month.ToString();
             today += "-" + DateTime.Today.Year.ToString().Trim().ToLower();
-            string path = @"datas\giro\" + today;
+            string path = @"ManagerSide\datas\giro\" + today;
             todayFilePath = path + "\\dailySpends.txt";
             if (!Directory.Exists(path))
             {

@@ -6,6 +6,7 @@ using CustomControls.RJControls;
 using RoundBorderLabel;
 using System.Text.RegularExpressions;
 using PQContentWidget;
+using ManagerSide;
 
 namespace OrdersPage
 {
@@ -31,10 +32,12 @@ namespace OrdersPage
             this.folderAdress = folderAdress;
             baseCreator();
             productLoader();
+            ExpensesAndSales.folderControl();
         }
 
         private void baseCreator()
         {
+
             //local variables
             Point point = new Point(20, 85);
             BackColor = Color.FromArgb(255, 230, 204);
@@ -66,7 +69,7 @@ namespace OrdersPage
 
             panelForOrderSection.Location = new Point(32, 95);
             panelForOrderSection.Size = new Size(115, 315);
-            panelForOrderSection.BackColor = Color.AliceBlue;
+            panelForOrderSection.BackColor = BackColor;
             panelForOrderSection.FlowDirection = FlowDirection.LeftToRight;
             panelForOrderSection.AutoScroll = true;
             panelForOrderSection.WrapContents = true;
