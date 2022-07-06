@@ -1,0 +1,4 @@
+&name:merve1
+&password:12345
+&gender:female
+&balance:938

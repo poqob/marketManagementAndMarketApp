@@ -1,0 +1,4 @@
+&name:AbdulHamidHan
+&password:01453
+&gender:male
+&balance:1000

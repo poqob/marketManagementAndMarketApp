@@ -1,0 +1,3 @@
+&sweater:10,90$
+&datas\suppliers\HOOMAN\fotoData\CHILD\1.png
+&datas\suppliers\HOOMAN\fotoData\CHILD\1.txt

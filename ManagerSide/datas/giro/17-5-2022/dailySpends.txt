@@ -1,0 +1,6 @@
+bills:500$
+employeeWage:1500$
+taxes:650$
+sells:15$
+orders:87$
+giro:2752$

@@ -1,0 +1,3 @@
+&pants:7,91$
+&datas\suppliers\ASPAVA\fotoData\CHILD\3.png
+&datas\suppliers\ASPAVA\fotoData\CHILD\3.txt

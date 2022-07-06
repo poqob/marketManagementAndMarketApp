@@ -1,0 +1,3 @@
+&pants:2,34$
+&datas\suppliers\ERTAN\fotoData\WOMAN\3.png
+&datas\suppliers\ERTAN\fotoData\WOMAN\3.txt
